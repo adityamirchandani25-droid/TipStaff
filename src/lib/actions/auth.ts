@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { CATEGORY_ORDER } from "@/lib/categories";
+import { ensureAccountProfile } from "@/lib/auth";
 import { accountHome, safeAuthCallback } from "@/lib/auth-routing";
 import { normalizePhone } from "@/lib/phone";
 import { prisma } from "@/lib/prisma";
@@ -54,10 +55,7 @@ export async function login(
       return invalidPortalLogin(portal);
     }
 
-    const profile = await prisma.user.findUnique({
-      where: { id: data.user.id },
-      select: { role: true },
-    });
+    const profile = await ensureAccountProfile(data.user, portal);
     if (!profile || profile.role !== portal) {
       await supabase.auth.signOut({ scope: "local" });
       return invalidPortalLogin(portal);
@@ -141,7 +139,14 @@ async function createAccount(
       email,
       password,
       options: {
-        data: { full_name: name, phone: normalizedPhone },
+        data: {
+          full_name: name,
+          phone: normalizedPhone,
+          account_role: role,
+          ...(role === "PROVIDER" && workerInput.success
+            ? { category: workerInput.data.category }
+            : {}),
+        },
         emailRedirectTo,
       },
     });
@@ -155,28 +160,7 @@ async function createAccount(
     }
 
     try {
-      await prisma.user.create({
-        data: {
-          id: data.user.id,
-          name,
-          email,
-          phone: normalizedPhone,
-          emailVerified: data.user.email_confirmed_at
-            ? new Date(data.user.email_confirmed_at)
-            : null,
-          role,
-          ...(role === "PROVIDER" && workerInput.success
-            ? {
-                provider: {
-                  create: {
-                    categories: [workerInput.data.category],
-                    approvalStatus: "PENDING",
-                  },
-                },
-              }
-            : {}),
-        },
-      });
+      await ensureAccountProfile(data.user, role);
     } catch (profileError) {
       console.error(
         "Supabase user created but TipStaff profile creation failed",
