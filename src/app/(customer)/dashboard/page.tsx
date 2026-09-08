@@ -51,7 +51,7 @@ export default async function DashboardPage() {
               <ClipboardList size={30} className="mx-auto mb-4 text-ink-400" />
               <h3 className="text-base font-semibold">No requests yet</h3>
               <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink-500">Once you send a request, you’ll see its details, estimate, and assignment status here.</p>
-              <Link href="/" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-700">Browse services <ArrowRight size={15} /></Link>
+              <Link href="/services" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-700">Browse services <ArrowRight size={15} /></Link>
             </CardContent>
           </Card>
         ) : (
