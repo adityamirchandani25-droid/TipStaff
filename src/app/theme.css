@@ -1,0 +1,99 @@
+/*
+ * Dark/light/system theme. `data-theme` is set on <html> by ThemeProvider
+ * (next-themes) before paint, so there's no flash of the wrong theme.
+ *
+ * This file overrides the root design tokens only (the Tailwind @theme
+ * scale in globals.css, plus the --product-* vars from product-polish.css).
+ * Component-level hardcoded colors are handled separately by
+ * globals.dark.css / product-polish.dark.css / marketplace.dark.css
+ * (generated — see scratchpad-gen-dark.py).
+ */
+
+:root {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* --product-* — carried over from product-polish.css's active values,
+     inverted with the same transform used for every hardcoded color below. */
+  --product-ink: #cfddef;
+  --product-muted: #7d8da2;
+  --product-blue: #3888f8;
+  --product-line: #1b2430;
+
+  /* Brand ramp — hand-tuned rather than run through the generic per-value
+     transform: a Tailwind 50-900 scale is used for both tinted backgrounds
+     (50-400) and solid interactive states (700 default / 800 hover / 900
+     active), and those two roles need to move in opposite directions once
+     the base surface goes dark. A blind lightness-inversion made 900
+     (meant to stay a deep, clearly-blue "pressed" state) flip to near-white. */
+  --color-brand-50: #0c1a2e;
+  --color-brand-100: #10233d;
+  --color-brand-200: #15304f;
+  --color-brand-300: #1c4066;
+  --color-brand-400: #275384;
+  --color-brand-500: #3567a8;
+  --color-brand-600: #4779c9;
+  --color-brand-700: #5988e8;
+  --color-brand-800: #4573db;
+  --color-brand-900: #2f5bc4;
+
+  --color-ink-50: #12161a;
+  --color-ink-100: #171a1e;
+  --color-ink-200: #21242a;
+  --color-ink-300: #2f343a;
+  --color-ink-400: #bec2ca;
+  --color-ink-500: #8b919e;
+  --color-ink-600: #d0d4da;
+  --color-ink-700: #d3d8e0;
+  --color-ink-800: #d8dfe8;
+  --color-ink-900: #dae0ed;
+
+  --color-surface: #121212;
+  --color-surface-raised: #121212;
+  --color-border: var(--color-ink-200);
+
+  --color-emergency: #ef5555;
+  --color-emergency-bg: #2a0505;
+  --color-today: #e0a339;
+  --color-today-bg: #322903;
+  --color-scheduled: var(--color-brand-300);
+  --color-scheduled-bg: var(--color-brand-50);
+  --color-success: #3ecf72;
+  --color-success-bg: #082a12;
+}
+
+/* Floating theme control — placed once in the root layout so it works
+   regardless of which header component a given route is using. */
+.theme-toggle {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 60;
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  box-shadow: 0 6px 20px -8px rgb(0 0 0 / 0.25), 0 1px 2px rgb(0 0 0 / 0.06);
+}
+.theme-toggle button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  color: var(--color-ink-500);
+  transition: background .15s, color .15s;
+}
+.theme-toggle button:hover:not(:disabled) { background: var(--color-ink-100); color: var(--color-ink-700); }
+.theme-toggle button.active { background: var(--color-brand-700); color: #fff; }
+[data-theme="dark"] .theme-toggle button.active { color: #0b1220; }
+.theme-toggle button:disabled { opacity: .5; }
+@media (max-width: 760px) {
+  .theme-toggle { right: 12px; bottom: 12px; }
+  .theme-toggle button { width: 30px; height: 30px; }
+}

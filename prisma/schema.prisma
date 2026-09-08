@@ -1,0 +1,329 @@
+// FixIt Now — data model
+// See README.md for setup steps and docs/ARCHITECTURE.md for how these
+// models map onto the dispatch/matching flow.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum Role {
+  CUSTOMER
+  PROVIDER
+  ADMIN
+}
+
+enum ServiceCategory {
+  PLUMBING
+  ELECTRICAL
+  HVAC
+  ROOFING
+  LOCKSMITH
+  APPLIANCE
+  HANDYMAN
+  PEST
+  OTHER
+}
+
+enum UrgencyLevel {
+  EMERGENCY // "as soon as possible"
+  TODAY
+  THIS_WEEK
+}
+
+/// Lifecycle of a customer's service request, independent of any one
+/// provider's job record (a request can fan out to several dispatch
+/// attempts before — or instead of — landing a Job).
+enum RequestStatus {
+  SEARCHING // actively cascading through candidate providers
+  MATCHED // a provider accepted; Job exists
+  UNMATCHED // exhausted the candidate list, no one accepted
+  CANCELLED
+}
+
+/// One offer to one candidate provider for one request. The matching engine
+/// creates a row per candidate as it cascades down the ranked list.
+enum DispatchStatus {
+  OFFERED
+  ACCEPTED
+  DECLINED
+  EXPIRED // accept window elapsed with no response
+  SUPERSEDED // another attempt was accepted first
+}
+
+/// Lifecycle of an accepted job, shown to the customer as the timeline:
+/// Requested -> Matched -> En Route -> On Site -> In Progress -> Completed
+enum JobStatus {
+  MATCHED
+  EN_ROUTE
+  ARRIVED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ProviderApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum PayoutStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+// ---------------------------------------------------------------------------
+// Identity
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  role          Role      @default(CUSTOMER)
+  name          String
+  email         String    @unique
+  emailVerified DateTime?
+  phone         String?   @unique
+  passwordHash  String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  addresses        Address[]
+  serviceRequests  ServiceRequest[] @relation("CustomerRequests")
+  provider         Provider?
+  reviewsWritten   Review[]         @relation("ReviewAuthor")
+  messages         Message[]
+
+  @@index([role])
+}
+
+model Address {
+  id         String  @id @default(cuid())
+  userId     String
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label      String // "Home", "Rental property", ...
+  line1      String
+  line2      String?
+  city       String
+  state      String
+  postalCode String
+  lat        Float
+  lng        Float
+  isDefault  Boolean @default(false)
+
+  serviceRequests ServiceRequest[]
+
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// Providers
+// ---------------------------------------------------------------------------
+
+model Provider {
+  id               String                  @id @default(cuid())
+  userId           String                  @unique
+  user             User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categories       ServiceCategory[]
+  bio              String?
+  serviceRadiusMi  Float                   @default(15)
+  approvalStatus   ProviderApprovalStatus  @default(PENDING)
+  isOnline         Boolean                 @default(false)
+  currentLat       Float?
+  currentLng       Float?
+  locationUpdatedAt DateTime?
+  rating           Float                   @default(0)
+  ratingCount      Int                     @default(0)
+  jobsCompleted    Int                     @default(0)
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  certifications    Certification[]
+  dispatchAttempts  DispatchAttempt[]
+  jobs              Job[]
+  payouts           Payout[]
+  reviewsReceived   Review[]                @relation("ReviewSubject")
+
+  @@index([approvalStatus])
+  @@index([isOnline])
+}
+
+model Certification {
+  id         String   @id @default(cuid())
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  name       String
+  issuer     String?
+  fileUrl    String?
+  verified   Boolean  @default(false) // mocked verification for MVP
+  uploadedAt DateTime @default(now())
+
+  @@index([providerId])
+}
+
+// ---------------------------------------------------------------------------
+// Requests, dispatch, and jobs
+// ---------------------------------------------------------------------------
+
+model ServiceRequest {
+  id                String          @id @default(cuid())
+  customerId        String
+  customer          User            @relation("CustomerRequests", fields: [customerId], references: [id])
+  addressId         String
+  address           Address         @relation(fields: [addressId], references: [id])
+  category          ServiceCategory
+  description       String
+  photos            String[]        @default([])
+  urgency           UrgencyLevel
+  status            RequestStatus   @default(SEARCHING)
+  priceEstimateLow  Decimal         @db.Decimal(10, 2)
+  priceEstimateHigh Decimal         @db.Decimal(10, 2)
+  surgeMultiplier   Float           @default(1.0)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  dispatchAttempts DispatchAttempt[]
+  job              Job?
+
+  @@index([status])
+  @@index([customerId])
+}
+
+/// One offer, to one provider, for one request — created and expired in
+/// sequence as the matching engine cascades down the ranked candidate list.
+model DispatchAttempt {
+  id         String         @id @default(cuid())
+  requestId  String
+  request    ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  providerId String
+  provider   Provider       @relation(fields: [providerId], references: [id])
+  rank       Int // position in the candidate ranking for this request
+  status     DispatchStatus @default(OFFERED)
+  payout     Decimal        @db.Decimal(10, 2)
+  distanceMi Float
+  offeredAt  DateTime       @default(now())
+  expiresAt  DateTime
+  respondedAt DateTime?
+
+  @@index([requestId])
+  @@index([providerId, status])
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  requestId   String    @unique
+  request     ServiceRequest @relation(fields: [requestId], references: [id])
+  providerId  String
+  provider    Provider  @relation(fields: [providerId], references: [id])
+  status      JobStatus @default(MATCHED)
+  beforePhotos String[] @default([])
+  afterPhotos  String[] @default([])
+  finalPrice  Decimal?  @db.Decimal(10, 2)
+  tip         Decimal?  @db.Decimal(10, 2)
+  matchedAt   DateTime  @default(now())
+  enRouteAt   DateTime?
+  arrivedAt   DateTime?
+  startedAt   DateTime?
+  completedAt DateTime?
+  cancelledAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  statusEvents JobStatusEvent[]
+  messages     Message[]
+  payment      Payment?
+  review       Review?
+
+  @@index([providerId])
+  @@index([status])
+}
+
+/// Append-only audit trail backing the customer-facing timeline and the
+/// admin dispute view.
+model JobStatusEvent {
+  id        String    @id @default(cuid())
+  jobId     String
+  job       Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  status    JobStatus
+  note      String?
+  createdAt DateTime  @default(now())
+
+  @@index([jobId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id])
+  body      String
+  createdAt DateTime @default(now())
+
+  @@index([jobId])
+}
+
+// ---------------------------------------------------------------------------
+// Money and feedback
+// ---------------------------------------------------------------------------
+
+model Payment {
+  id                    String        @id @default(cuid())
+  jobId                 String        @unique
+  job                   Job           @relation(fields: [jobId], references: [id])
+  amount                Decimal       @db.Decimal(10, 2)
+  tip                   Decimal?      @db.Decimal(10, 2)
+  currency              String        @default("usd")
+  stripePaymentIntentId String?       @unique
+  status                PaymentStatus @default(PENDING)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@index([status])
+}
+
+model Payout {
+  id          String       @id @default(cuid())
+  providerId  String
+  provider    Provider     @relation(fields: [providerId], references: [id])
+  amount      Decimal      @db.Decimal(10, 2)
+  periodStart DateTime
+  periodEnd   DateTime
+  status      PayoutStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+
+  @@index([providerId])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  jobId      String   @unique
+  job        Job      @relation(fields: [jobId], references: [id])
+  authorId   String
+  author     User     @relation("ReviewAuthor", fields: [authorId], references: [id])
+  providerId String
+  provider   Provider @relation("ReviewSubject", fields: [providerId], references: [id])
+  rating     Int // 1-5
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  @@index([providerId])
+}

@@ -1,69 +1,24 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight, Check, MapPin, MousePointer2, ReceiptText, Wrench, Building2, ListFilter } from "lucide-react";
+import { SiteHeader } from "@/components/site-header";
+import { BrandLogo } from "@/components/brand-logo";
+import { CategoryIcon } from "@/components/category-icon";
+import { CATEGORY_ORDER, CATEGORY_LABELS } from "@/lib/categories";
+import { Reveal } from "@/components/marketing/reveal";
+import "./marketplace.css";
+import "./marketplace.dark.css";
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+  return <div className="landing-home"><SiteHeader current="home" /><a href="#main" className="skip-link">Skip to content</a><main id="main">
+    <section className="landing-hero"><div className="landing-hero-copy"><span className="landing-eyebrow">LOCAL HELP. YOUR CHOICE.</span><h1>The right help.<br /><span>Right around you.</span></h1><p>Find home service companies, see where their workers are, and choose who you want to book. All in one place.</p><div className="landing-hero-actions"><Link href="/services" className="landing-primary">Find a service <ArrowRight size={19} /></Link><a href="#how-it-works">See how it works <ArrowUpRight size={17} /></a></div><div className="landing-hero-points"><span><Check size={15} />Compare companies</span><span><Check size={15} />See estimates</span><span><Check size={15} />Choose your service</span></div></div>
+    <div className="landing-product-preview" aria-label="Preview of the company browser"><div className="preview-window-top"><span /><span /><span /><small>Find your next helping hand</small></div><div className="preview-categories"><span><Wrench size={15} />All services</span><span>Plumbing</span><span>Electrical</span><span>More</span></div><div className="preview-browser"><div className="preview-companies"><span className="preview-list-label">Companies near you</span><div className="preview-company active"><span>CL</span><div><strong>Clearline</strong><small>Home services</small></div><Check size={14} /></div><div className="preview-company"><span>SW</span><div><strong>Switch</strong><small>Electrical</small></div></div><div className="preview-company"><span>GN</span><div><strong>Good Neighbor</strong><small>Home repairs</small></div></div><div className="preview-view">View company <ArrowRight size={13} /></div></div><div className="preview-map" aria-hidden="true"><div className="preview-river" /><span className="preview-map-label">AUSTIN</span><span className="preview-pin one"><Wrench size={19} /></span><span className="preview-pin two"><Wrench size={19} /></span><span className="preview-pin three"><Wrench size={19} /></span><span className="preview-map-dot" /></div></div><div className="preview-caption"><MapPin size={13} />Illustrative directory preview · demo listings</div></div></section>
+    <section className="landing-service-strip" aria-label="Available service categories"><span>What do you need?</span><div>{CATEGORY_ORDER.map(category => <Link key={category} href={`/services?category=${category}`}><CategoryIcon category={category} className="h-5 w-5" />{CATEGORY_LABELS[category]}</Link>)}</div></section>
+    <Reveal><section id="how-it-works" className="landing-section"><div className="landing-section-title"><span className="landing-eyebrow">FROM SEARCH TO SERVICE</span><h2>A simpler way to get it sorted.</h2><p>You pick the service. You choose the company. We keep the details together.</p></div><div className="landing-steps">{[
+      { icon: ListFilter, title: "Start with what you need", text: "Choose plumbing, electrical, home repairs, or another service from the category bar." },
+      { icon: MapPin, title: "See who’s around", text: "Browse companies alongside the map. Select a listing or a worker marker to take a closer look." },
+      { icon: MousePointer2, title: "Choose and book", text: "Check the company’s services and starting estimate, then add your job details and preferred timing." },
+    ].map(({ icon: Icon, title, text }, index) => <article key={title}><div><Icon size={25} /><span>0{index + 1}</span></div><h3>{title}</h3><p>{text}</p></article>)}</div></section></Reveal>
+    <Reveal><section className="landing-choice"><div><span className="landing-eyebrow">A CLEARER PICTURE BEFORE YOU BOOK</span><h2>Your home.<br />Your choice of help.</h2><Link href="/services">Explore the directory <ArrowRight size={17} /></Link></div><div className="landing-choice-list"><article><Building2 size={22} /><div><h3>Get to know the company</h3><p>See what they do and which services fit your job before you choose.</p></div></article><article><ReceiptText size={22} /><div><h3>Understand the starting cost</h3><p>Review the callout and first-hour estimate. Parts and additional work may cost more.</p></div></article><article><Check size={22} /><div><h3>Keep the next step clear</h3><p>Review your request before sending. A requested time still needs confirmation.</p></div></article></div></section></Reveal>
+    <section className="landing-last"><div><h2>What needs doing?</h2><p>Start with the service. Find a company that fits.</p></div><Link href="/services" className="landing-primary">Browse home services <ArrowRight size={18} /></Link></section>
+  </main><footer className="landing-footer"><Link href="/" aria-label="TipStaff home"><BrandLogo /></Link><span>© {new Date().getFullYear()} TipStaff</span><Link href="/worker/signup">Work with TipStaff <ArrowUpRight size={14} /></Link></footer></div>;
 }

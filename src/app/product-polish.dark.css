@@ -1,0 +1,97 @@
+/* Auto-generated dark-mode overrides for product-polish.css.
+   Regenerate with scripts/generate-dark-mode.py (run from src/app/) if product-polish.css changes
+   significantly — do not hand-edit color values here. */
+[data-theme="dark"] .product-home { background: #0d1520; }
+[data-theme="dark"] .product-header { border-bottom-color: #19212d; }
+[data-theme="dark"] .product-header nav a { color: #8593a6; }
+[data-theme="dark"] .product-header nav a[aria-current] { color: #cfddef; border-bottom-color: #3888f8; }
+[data-theme="dark"] .worker-entry { color: #6e839f; }
+[data-theme="dark"] .account-entry { color: #eef1f6; background: #3888f8; border-color: #3888f8; box-shadow: 0 2px 3px #3888f812; }
+[data-theme="dark"] .account-entry:hover { background: #1c76f7; border-color: #1c76f7; }
+[data-theme="dark"] .ts-logo { color: #cfddef; }
+[data-theme="dark"] .ts-logo svg { color: #3888f8; }
+[data-theme="dark"] .product-overline { color: #8598ad; }
+[data-theme="dark"] .booking-intro h1 { color: #cfddef; }
+[data-theme="dark"] .booking-intro p { color: #8290a4; }
+[data-theme="dark"] .booking-start-label { color: #8c9bac; }
+[data-theme="dark"] .booking-start-label > span { background: #a6b4c7; }
+[data-theme="dark"] .section-label > span:first-child { color: #cedae9; }
+[data-theme="dark"] .section-label > span:last-child { color: #93a1b4; }
+[data-theme="dark"] .service-option { border-color: #1b2431; box-shadow: 0 2px 3px #cddcf103; }
+[data-theme="dark"] .service-option:hover { border-color: #113566; background: #121212; }
+[data-theme="dark"] .service-option[aria-pressed="true"] { background: #02142e; border-color: #3888f8; box-shadow: 0 0 0 1px #3888f8; }
+[data-theme="dark"] .service-option-top { color: #4873a8; }
+[data-theme="dark"] .service-option-check { border-color: #1f2b3a; background: #121212; }
+[data-theme="dark"] .service-option[aria-pressed="true"] .service-option-top { color: #3888f8; }
+[data-theme="dark"] .service-option[aria-pressed="true"] .service-option-check { background: #3888f8; border-color: #3888f8; }
+[data-theme="dark"] .service-option strong { color: #cfdbea; }
+[data-theme="dark"] .service-option > span:last-child { color: #8694a6; }
+[data-theme="dark"] .service-option[aria-pressed="true"] strong { color: #106def; }
+[data-theme="dark"] .timing-options button { border-color: #1b2532; }
+[data-theme="dark"] .timing-options button[aria-pressed="true"] { background: #02142e; border-color: #99bef4; }
+[data-theme="dark"] .timing-options strong { color: #cddae8; }
+[data-theme="dark"] .timing-options small { color: #8897aa; }
+[data-theme="dark"] .timing-radio { border-color: #2f3f52; }
+[data-theme="dark"] .timing-options button[aria-pressed="true"] .timing-radio { border-color: #3888f8; }
+[data-theme="dark"] .timing-selector > p { color: #8f9cad; }
+[data-theme="dark"] .booking-summary { border-color: #182536; box-shadow: 0 6px 24px #c8d6eb07, 0 1px 2px #c8d6eb05; }
+[data-theme="dark"] .summary-heading { border-bottom-color: #141f2c; }
+[data-theme="dark"] .summary-heading > svg { color: #6592cd; background: #031530; }
+[data-theme="dark"] .summary-heading h2 { color: #cfdbea; }
+[data-theme="dark"] .estimate-placeholder { color: #b6c4d8; }
+[data-theme="dark"] .estimate-empty h3 { color: #ccd8e4; }
+[data-theme="dark"] .estimate-empty p { color: #8f9bab; }
+[data-theme="dark"] .estimate-service { color: #cfdbea; }
+[data-theme="dark"] .estimate-service > span { color: #6286b0; background: #0c192b; }
+[data-theme="dark"] .estimate-caption { color: #8798ad; }
+[data-theme="dark"] .estimate-total { color: #cbdcf1; }
+[data-theme="dark"] .estimate-total > span { color: #b6c1d1; }
+[data-theme="dark"] .estimate-currency { color: #8e9bac; }
+[data-theme="dark"] .estimate-breakdown { border-top-color: #141f2c; }
+[data-theme="dark"] .estimate-breakdown > span { color: #7d90a8; }
+[data-theme="dark"] .estimate-breakdown svg { color: #879eb9; }
+[data-theme="dark"] .booking-continue { background: #3888f8; }
+[data-theme="dark"] .booking-continue:hover { background: #1c76f7; }
+[data-theme="dark"] .booking-continue:disabled { background: #131b27; color: #95a1b3; border: 1px solid #18212e; }
+[data-theme="dark"] .next-step { color: #94a0b2; }
+[data-theme="dark"] .payment-note { color: #8497ab; background: #0d1520; border: 1px solid #151d2b; }
+[data-theme="dark"] .payment-note svg { color: #8a9eb8; }
+[data-theme="dark"] .booking-questions { border-top-color: #1a2431; }
+[data-theme="dark"] .booking-questions h2 { color: #cddae9; }
+[data-theme="dark"] .booking-questions summary { color: #cbd6e3; }
+[data-theme="dark"] .booking-questions details { border-color: #192331; }
+[data-theme="dark"] .booking-questions details p { color: #8796a9; }
+[data-theme="dark"] .product-footer { border-top-color: #1a2431; }
+[data-theme="dark"] .product-footer > div > span, [data-theme="dark"] .product-footer p { color: #95a2b3; }
+[data-theme="dark"] .product-footer p a { color: #3179da; }
+[data-theme="dark"] .ts-auth-page, [data-theme="dark"] .ts-worker-page { background: #0d1520; }
+[data-theme="dark"] .ts-auth-main { border-color: #172333; box-shadow: 0 8px 28px #c8d6eb05; }
+[data-theme="dark"] .ts-auth-story { background: #08162c; }
+[data-theme="dark"] .ts-auth-story h2 { color: #cad9ec; }
+[data-theme="dark"] .ts-auth-story > p { color: #8397b0; }
+[data-theme="dark"] .auth-guide-icon { color: #699bd8; }
+[data-theme="dark"] .ts-auth-story li { color: #5d85ad; }
+[data-theme="dark"] .auth-guide-note { color: #889cb3; border-color: #152337; }
+[data-theme="dark"] .ts-auth-form h1 { color: #cedcea; }
+[data-theme="dark"] .ts-account-switch { border-bottom-color: #172333; }
+[data-theme="dark"] .ts-account-switch a { color: #8e9db2; }
+[data-theme="dark"] .ts-account-switch a[aria-current] { color: #3888f8; border-bottom-color: #3888f8; }
+[data-theme="dark"] .ts-auth-form input { border-color: #192635; }
+[data-theme="dark"] .ts-auth-form button[type="submit"] { background: #3888f8; box-shadow: 0 3px 6px #3888f810; }
+[data-theme="dark"] .ts-auth-form button[type="submit"]:hover { background: #1c76f7; }
+[data-theme="dark"] .request-page-heading h1 { color: #ccddee; }
+[data-theme="dark"] .request-form { border-color: #1a2431; }
+[data-theme="dark"] .request-stage h2 { color: #cddbea; }
+[data-theme="dark"] .request-sidebar { background: #021028; border-color: #132236; }
+[data-theme="dark"] .request-sidebar h2 { color: #c8d7e9; }
+[data-theme="dark"] .request-sidebar dt, [data-theme="dark"] .request-summary-price > span { color: #8b9fb6; }
+[data-theme="dark"] .request-sidebar dd { color: #cad9e9; }
+[data-theme="dark"] .request-summary-price strong { color: #c3d7f0; }
+[data-theme="dark"] .review-row { border-color: #162231; }
+[data-theme="dark"] .review-row > button { color: #3888f8; }
+[data-theme="dark"] .review-next { background: #02132f; }
+[data-theme="dark"] .ts-worker-stats article, [data-theme="dark"] .ts-worker-empty { border-color: #172333; }
+[data-theme="dark"] .ts-worker-stats svg { color: #73a2dc; }
+[data-theme="dark"] .ts-worker-stats strong { color: #c8d7ea; }
+[data-theme="dark"] .ts-worker-notice { background: #031730; border-color: #0b2241; }
+[data-theme="dark"] .ts-worker-page h1, [data-theme="dark"] .ts-worker-jobs h2 { color: #ccdaeb; }
