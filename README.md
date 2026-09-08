@@ -14,7 +14,7 @@ exists today versus what's still scaffolding.
 | ---------- | --------------------------------------------------------- |
 | Frontend   | Next.js 16 (App Router) + TypeScript + Tailwind CSS v4    |
 | Database   | PostgreSQL + Prisma ORM 7 (driver adapters, no `url` in schema) |
-| Auth       | Auth.js / NextAuth v5 (credentials provider, JWT sessions) |
+| Auth       | Supabase Auth (`@supabase/ssr`, cookie-based sessions)     |
 | Realtime   | Self-hosted Socket.IO server (`server/`)                  |
 | Payments   | Stripe (test mode; mocked when no key is set)              |
 | Maps       | Leaflet + OpenStreetMap (no map API key required)          |
@@ -40,19 +40,17 @@ npm run db:seed             # sample admin, customers, providers, one completed 
 npm run dev                 # http://localhost:3000
 ```
 
-All seeded accounts (see `prisma/seed.ts`) use the password
-`password123` — for example `jordan@tipstaff.dev` (customer),
-`mike.reyes@tipstaff.dev` (approved, online plumber), or
-`alex.novak@tipstaff.dev` (provider still pending admin approval).
-Log in as a customer at `/login` to walk through **New request** —
+Supabase Auth manages login credentials. Seeded Prisma profiles are sample
+application data only and are not automatically Supabase Auth accounts.
+Create a customer at `/signup` to walk through **New request** —
 category → details/photos → urgency (with a live price estimate) →
 address → confirmation.
 
-### Running without real API keys
+### Environment variables
 
-Every third-party integration is structured to degrade to a mocked
-mode when its env var is blank, so the app is fully usable locally
-with just Postgres running:
+`DATABASE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, and
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` are required. Stripe and Mapbox can
+run with their optional mocked fallbacks:
 
 - **Stripe** — blank keys mean payments auto-"succeed" server-side
   instead of calling the Stripe SDK. Drop in test-mode keys from your
@@ -62,10 +60,9 @@ with just Postgres running:
   login and booking locally. New addresses receive deterministic demo
   coordinates around Austin, not their actual locations. A token enables
   address geocoding; live maps, tracking, and dispatch are separate work.
-- **Auth** — the credentials provider hashes/checks passwords against
-  Postgres directly; no external identity provider is required. Swap
-  in a real OTP/SMS or OAuth provider later without touching the data
-  model.
+- **Auth** — set `NEXT_PUBLIC_SUPABASE_URL` and
+  `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Supabase manages passwords and
+  sessions; Prisma keeps the trusted TipStaff role and application profile.
 
 ### Useful scripts
 
@@ -76,6 +73,7 @@ with just Postgres running:
 | `npm run typecheck`   | `tsc --noEmit`                                 |
 | `npm run lint`        | ESLint                                          |
 | `npm run db:migrate`  | Apply Prisma migrations                        |
+| `npm run db:deploy`   | Apply committed migrations in production       |
 | `npm run db:seed`     | Reset and reseed sample data                   |
 | `npm run db:studio`   | Prisma Studio (browse the DB)                  |
 
@@ -89,13 +87,14 @@ src/
   app/
     (auth)/                # /login, /signup — split branded layout
     (customer)/             # /dashboard, /request/new, /request/[id] — session-gated
-    api/auth/[...nextauth]/ # NextAuth route handler
+    auth/confirm/           # Supabase email-confirmation callback
   components/
     ui/                    # design-system primitives (Button, Badge, Card, Input, ...)
     request-wizard/         # the 4-step "what's wrong" flow
     auth/                   # login/signup forms
   lib/
-    auth.ts, auth.config.ts # NextAuth config, split edge-safe/full per Auth.js v5 convention
+    auth.ts                 # verified Supabase session + Prisma profile lookup
+    supabase/               # SSR server client and session-refresh proxy
     actions/                 # server actions (signUp, createServiceRequest, ...)
     validations/             # zod schemas shared by client forms and server actions
     pricing.ts, categories.ts, geocode.ts
@@ -122,7 +121,7 @@ dashboard. Full schema: [`prisma/schema.prisma`](prisma/schema.prisma).
 ## Build status
 
 1. ✅ Project scaffold, Prisma schema, seed data
-2. ✅ Auth (credentials, JWT sessions) + basic customer request flow
+2. ✅ Supabase Auth + basic customer request flow
 3. ⬜ Provider dashboard + accept/decline flow
 4. ⬜ Real-time matching + live status updates
 5. ⬜ Map integration + live location tracking

@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
 import { signUpSchema, type SignUpInput } from "@/lib/validations/auth";
 import { signUp, signUpWorker } from "@/lib/actions/auth";
 import { Field } from "@/components/ui/field";
@@ -20,6 +19,7 @@ export function SignupForm({ callbackUrl, portal = "CUSTOMER" }: { callbackUrl: 
   const [category, setCategory] = useState<string>("HANDYMAN");
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -28,26 +28,25 @@ export function SignupForm({ callbackUrl, portal = "CUSTOMER" }: { callbackUrl: 
 
   async function onSubmit(values: SignUpInput) {
     setFormError(null);
+    setSuccessMessage(null);
     try {
-    const result = worker ? await signUpWorker({ ...values, category }) : await signUp(values);
-    if (!result.ok) {
-      setFormError(result.error ?? "Something went wrong. Try again.");
-      return;
-    }
+      const result = worker
+        ? await signUpWorker({ ...values, category })
+        : await signUp(values, callbackUrl);
+      if (!result.ok) {
+        setFormError(result.error ?? "Something went wrong. Try again.");
+        return;
+      }
 
-    const signInResult = await signIn("credentials", {
-      portal,
-      identifier: values.email,
-      password: values.password,
-      redirect: false,
-    });
-    if (signInResult?.error) {
-      setFormError("Account created — log in to continue.");
-      router.push(worker ? "/worker/login" : "/login");
-      return;
-    }
-    router.push(callbackUrl);
-    router.refresh();
+      if (result.requiresEmailConfirmation) {
+        setSuccessMessage(
+          "Account created. Check your email to confirm it, then log in.",
+        );
+        return;
+      }
+
+      router.push(callbackUrl);
+      router.refresh();
     } catch {
       setFormError("Couldn’t create your account. Please try again.");
     }
@@ -101,6 +100,7 @@ export function SignupForm({ callbackUrl, portal = "CUSTOMER" }: { callbackUrl: 
         </Field>
 
         {formError && <p role="alert" className="text-[13px] text-red-600">{formError}</p>}
+        {successMessage && <p role="status" className="text-[13px] text-emerald-700">{successMessage}</p>}
 
         <Button type="submit" size="lg" disabled={isSubmitting} className="mt-2">
           {isSubmitting ? "Creating account..." : "Create account"}

@@ -1,10 +1,12 @@
-import NextAuth from "next-auth";
-import { authConfig } from "@/lib/auth.config";
+import type { NextRequest } from "next/server";
+import { refreshSupabaseSession } from "@/lib/supabase/proxy";
 
-const { auth } = NextAuth(authConfig);
-
-export default auth;
+export async function proxy(request: NextRequest) {
+  return refreshSupabaseSession(request);
+}
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|webp)$).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

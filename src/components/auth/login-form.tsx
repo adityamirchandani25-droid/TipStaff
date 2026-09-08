@@ -7,16 +7,24 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
+import { login } from "@/lib/actions/auth";
 import { loginSchema, type LoginInput } from "@/lib/validations/auth";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export function LoginForm({ callbackUrl, portal = "CUSTOMER" }: { callbackUrl: string; portal?: AccountPortal }) {
+export function LoginForm({
+  callbackUrl,
+  portal = "CUSTOMER",
+  initialError = null,
+}: {
+  callbackUrl: string;
+  portal?: AccountPortal;
+  initialError?: string | null;
+}) {
   const worker = portal === "PROVIDER";
   const router = useRouter();
-  const [formError, setFormError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(initialError);
   const {
     register,
     handleSubmit,
@@ -26,13 +34,13 @@ export function LoginForm({ callbackUrl, portal = "CUSTOMER" }: { callbackUrl: s
   async function onSubmit(values: LoginInput) {
     setFormError(null);
     try {
-    const result = await signIn("credentials", { ...values, portal, redirect: false });
-    if (result?.error) {
-      setFormError(`Those details don’t match a ${worker ? "worker" : "customer"} account. Check your login details or switch account type.`);
-      return;
-    }
-    router.push(callbackUrl);
-    router.refresh();
+      const result = await login(values, portal);
+      if (!result.ok) {
+        setFormError(result.error ?? "Couldn’t sign in. Try again.");
+        return;
+      }
+      router.push(callbackUrl);
+      router.refresh();
     } catch {
       setFormError("Couldn’t connect. Please try signing in again.");
     }

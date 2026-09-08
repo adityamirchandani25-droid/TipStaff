@@ -15,3 +15,18 @@ export function safeCustomerCallback(raw: unknown) {
     return "/dashboard";
   }
 }
+
+export function safeAuthCallback(raw: unknown, fallback = "/dashboard") {
+  if (typeof raw !== "string" || /[\\\u0000-\u0020]/.test(raw)) return fallback;
+  try {
+    const url = new URL(raw, "https://tipstaff.local");
+    if (url.origin !== "https://tipstaff.local") return fallback;
+    const allowed =
+      url.pathname === "/dashboard" ||
+      url.pathname.startsWith("/request/") ||
+      url.pathname === "/worker/dashboard";
+    return allowed ? `${url.pathname}${url.search}` : fallback;
+  } catch {
+    return fallback;
+  }
+}

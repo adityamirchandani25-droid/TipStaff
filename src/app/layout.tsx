@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { DM_Sans, Public_Sans } from "next/font/google";
-import { AuthSessionProvider } from "@/components/session-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import "./globals.css";
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "Choose a home service, see a starting estimate, and manage your requests with TipStaff.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
@@ -35,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-surface text-ink-900 font-sans">
         <ThemeProvider>
-          <AuthSessionProvider>{children}</AuthSessionProvider>
+          {children}
           <ThemeToggle />
         </ThemeProvider>
       </body>
