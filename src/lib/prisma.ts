@@ -32,3 +32,8 @@ export const prisma = globalThis.__prisma ?? createClient();
 if (process.env.NODE_ENV !== "production") {
   globalThis.__prisma = prisma;
 }
+
+// The adapter's `schema` option (above) only affects queries Prisma Client
+// itself generates — raw SQL (see lib/geo.ts) has to qualify table names
+// with the same schema by hand. Exported so callers stay in sync with it.
+export const prismaSchema = databaseSchema(process.env.DATABASE_URL);

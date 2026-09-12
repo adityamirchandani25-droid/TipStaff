@@ -48,6 +48,10 @@
 [data-theme="dark"] .landing-choice > div:first-child > a { color: #3888f8; }
 [data-theme="dark"] .landing-choice-list svg { color: #82a6d5; }
 [data-theme="dark"] .landing-choice-list p { color: #9caabd; }
+[data-theme="dark"] .landing-contact { background: #07192e; box-shadow: 0 24px 60px -35px #000; }
+[data-theme="dark"] .landing-contact-intro > p { color: #a9bdd5; }
+[data-theme="dark"] .landing-contact-card { border-color: #ffffff1f; }
+[data-theme="dark"] .landing-contact-card:hover { background: #ffffff0b; }
 [data-theme="dark"] .landing-last p { color: #9caabc; }
 [data-theme="dark"] .landing-footer { border-top: 1px solid #141f2f; color: #aab6c6; }
 [data-theme="dark"] .landing-footer > a:last-child { color: #7390b3; }

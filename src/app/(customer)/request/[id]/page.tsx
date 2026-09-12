@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
-import { CheckCircle2, Clock, MapPin } from "lucide-react";
+import { CheckCircle2, Clock, MapPin, CreditCard } from "lucide-react";
 import { getMyRequest } from "@/lib/actions/requests";
 import { CATEGORY_LABELS } from "@/lib/categories";
 import { CategoryIcon } from "@/components/category-icon";
@@ -94,6 +94,20 @@ export default async function RequestDetailPage({
               </span>
             </div>
           </div>
+
+          {request.payment && (
+            <div className="flex items-start gap-3 border-t border-border pt-4">
+              <CreditCard className="mt-0.5 h-4 w-4 shrink-0 text-ink-400" strokeWidth={1.75} />
+              <div className="text-sm text-ink-700">
+                <span className="font-medium text-ink-900">
+                  ${Number(request.payment.amount)} {request.payment.status === "SUCCEEDED" ? "paid" : request.payment.status.toLowerCase()}
+                </span>
+                <span className="block text-xs text-ink-500">
+                  Charged for the starting estimate. Any additional cost is settled with your pro.
+                </span>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

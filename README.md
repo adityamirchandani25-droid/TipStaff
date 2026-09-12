@@ -1,4 +1,4 @@
-# TipStaff
+# FixItFast
 
 On-demand home services, matched and dispatched like a delivery app.
 A homeowner describes what broke; the platform ranks nearby available
@@ -62,7 +62,7 @@ run with their optional mocked fallbacks:
   address geocoding; live maps, tracking, and dispatch are separate work.
 - **Auth** — set `NEXT_PUBLIC_SUPABASE_URL` and
   `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Supabase manages passwords and
-  sessions; Prisma keeps the trusted TipStaff role and application profile.
+  sessions; Prisma keeps the trusted FixItFast role and application profile.
 
 ### Useful scripts
 
@@ -132,9 +132,8 @@ dashboard. Full schema: [`prisma/schema.prisma`](prisma/schema.prisma).
 
 ### Branding and account portals
 
-Save the supplied logo as `public/images/tipstaff-logo.png` and refresh.
-The landing page, login pages, and both dashboards use the shared
-`BrandLogo` component. Until the file exists, they retain the text logo.
+The landing page, login pages, and both dashboards use the shared text-only
+`BrandLogo` component.
 
 - Customer login: `/login`; signup: `/signup`; requests: `/dashboard`.
 - Worker / driver login: `/worker/login`; signup: `/worker/signup`;

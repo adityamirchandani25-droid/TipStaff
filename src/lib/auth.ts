@@ -41,7 +41,7 @@ export async function auth(): Promise<AppSession | null> {
 
 export async function ensureAccountProfile(
   authUser: SupabaseUser,
-  requestedRole: "CUSTOMER" | "PROVIDER",
+  requestedRole: "CUSTOMER" | "PROVIDER" | "COMPANY",
 ): Promise<AccountProfile | null> {
   const email = authUser.email?.trim().toLowerCase();
   const existing = await findAccountProfile(authUser.id, email);
@@ -50,7 +50,7 @@ export async function ensureAccountProfile(
   const metadata = authUser.user_metadata;
   const metadataRole = metadata.account_role;
   const role =
-    metadataRole === "CUSTOMER" || metadataRole === "PROVIDER"
+    metadataRole === "CUSTOMER" || metadataRole === "PROVIDER" || metadataRole === "COMPANY"
       ? metadataRole
       : requestedRole;
   const metadataCategory = metadata.category;
@@ -83,6 +83,7 @@ export async function ensureAccountProfile(
               },
             }
           : {}),
+        ...(role === "COMPANY" ? { company: { create: { name, phone: metadataPhone } } } : {}),
       },
       select: { id: true, role: true },
     });

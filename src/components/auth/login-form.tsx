@@ -13,6 +13,27 @@ import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+const PORTAL_COPY: Record<
+  AccountPortal,
+  { title: string; subtitle: string; signupHref: (callbackUrl: string) => string }
+> = {
+  CUSTOMER: {
+    title: "Customer login",
+    subtitle: "Sign in to book help or check your requests.",
+    signupHref: (callbackUrl) => `/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`,
+  },
+  PROVIDER: {
+    title: "Worker login",
+    subtitle: "Sign in to your worker account to check your jobs.",
+    signupHref: () => "/worker/signup",
+  },
+  COMPANY: {
+    title: "Company login",
+    subtitle: "Sign in to manage your workers and their availability.",
+    signupHref: () => "/company/signup",
+  },
+};
+
 export function LoginForm({
   callbackUrl,
   portal = "CUSTOMER",
@@ -22,7 +43,7 @@ export function LoginForm({
   portal?: AccountPortal;
   initialError?: string | null;
 }) {
-  const worker = portal === "PROVIDER";
+  const copy = PORTAL_COPY[portal];
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(initialError);
   const {
@@ -49,8 +70,8 @@ export function LoginForm({
   return (
     <div className="ts-auth-form">
       <AccountSwitch portal={portal} />
-      <h1 className="font-display text-2xl tracking-tight text-ink-900">{worker ? "Worker login" : "Customer login"}</h1>
-      <p className="mt-1.5 text-sm text-ink-500">{worker ? "Sign in to your worker account to check your jobs." : "Sign in to book help or check your requests."}</p>
+      <h1 className="font-display text-2xl tracking-tight text-ink-900">{copy.title}</h1>
+      <p className="mt-1.5 text-sm text-ink-500">{copy.subtitle}</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-7 flex flex-col gap-4" noValidate>
         <Field label="Email or phone number" htmlFor="identifier" error={errors.identifier?.message}>
@@ -79,8 +100,8 @@ export function LoginForm({
       </form>
 
       <p className="mt-6 text-center text-sm text-ink-500">
-        New to TipStaff?{" "}
-        <Link href={worker ? "/worker/signup" : `/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="font-medium text-brand-700 hover:underline">
+        New to FixItFast?{" "}
+        <Link href={copy.signupHref(callbackUrl)} className="font-medium text-brand-700 hover:underline">
           Create an account
         </Link>
       </p>

@@ -23,7 +23,7 @@ export function SiteFooter() {
         </div>
       </div>
       <p className="mt-8 text-center text-xs text-ink-400 sm:text-left">
-        &copy; {new Date().getFullYear()} TipStaff
+        &copy; {new Date().getFullYear()} FixItFast
       </p>
     </footer>
   );

@@ -1,5 +1,5 @@
 {
-  "name": "tipstaff",
+  "name": "fixitfast",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -19,6 +19,8 @@
     "@hookform/resolvers": "^5.9.1",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "7.10.0",
+    "@stripe/react-stripe-js": "^6.10.0",
+    "@stripe/stripe-js": "^9.16.0",
     "@supabase/ssr": "^0.12.6",
     "@supabase/supabase-js": "^2.116.0",
     "bcryptjs": "^3.0.3",
@@ -34,6 +36,7 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "^7.87.0",
+    "stripe": "^22.6.2",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.5.4"
   },

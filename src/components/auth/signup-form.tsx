@@ -9,13 +9,38 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema, type SignUpInput } from "@/lib/validations/auth";
-import { signUp, signUpWorker } from "@/lib/actions/auth";
+import { signUp, signUpWorker, signUpCompany } from "@/lib/actions/auth";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+const PORTAL_COPY: Record<
+  AccountPortal,
+  { title: string; subtitle: string; nameLabel: string; loginHref: (callbackUrl: string) => string }
+> = {
+  CUSTOMER: {
+    title: "Create your account",
+    subtitle: "Create a customer account to request help nearby.",
+    nameLabel: "Full name",
+    loginHref: (callbackUrl) => `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`,
+  },
+  PROVIDER: {
+    title: "Create a worker account",
+    subtitle: "Create your worker account. Your profile will be reviewed before you can take jobs.",
+    nameLabel: "Full name",
+    loginHref: () => "/worker/login",
+  },
+  COMPANY: {
+    title: "Create a company account",
+    subtitle: "Register your company, then add workers from your dashboard — each one gets their own login.",
+    nameLabel: "Company name",
+    loginHref: () => "/company/login",
+  },
+};
+
 export function SignupForm({ callbackUrl, portal = "CUSTOMER" }: { callbackUrl: string; portal?: AccountPortal }) {
   const worker = portal === "PROVIDER";
+  const copy = PORTAL_COPY[portal];
   const [category, setCategory] = useState<string>("HANDYMAN");
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
@@ -30,9 +55,12 @@ export function SignupForm({ callbackUrl, portal = "CUSTOMER" }: { callbackUrl: 
     setFormError(null);
     setSuccessMessage(null);
     try {
-      const result = worker
-        ? await signUpWorker({ ...values, category })
-        : await signUp(values, callbackUrl);
+      const result =
+        portal === "PROVIDER"
+          ? await signUpWorker({ ...values, category })
+          : portal === "COMPANY"
+            ? await signUpCompany(values)
+            : await signUp(values, callbackUrl);
       if (!result.ok) {
         setFormError(result.error ?? "Something went wrong. Try again.");
         return;
@@ -55,13 +83,11 @@ export function SignupForm({ callbackUrl, portal = "CUSTOMER" }: { callbackUrl: 
   return (
     <div className="ts-auth-form">
       <AccountSwitch portal={portal} signup />
-      <h1 className="font-display text-2xl tracking-tight text-ink-900">{worker ? "Create a worker account" : "Create your account"}</h1>
-      <p className="mt-1.5 text-sm text-ink-500">
-        {worker ? "Create your worker account. Your profile will be reviewed before you can take jobs." : "Create a customer account to request help nearby."}
-      </p>
+      <h1 className="font-display text-2xl tracking-tight text-ink-900">{copy.title}</h1>
+      <p className="mt-1.5 text-sm text-ink-500">{copy.subtitle}</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-7 flex flex-col gap-4" noValidate>
-        <Field label="Full name" htmlFor="name" error={errors.name?.message}>
+        <Field label={copy.nameLabel} htmlFor="name" error={errors.name?.message}>
           <Input id="name" autoComplete="name" invalid={!!errors.name} {...register("name")} />
         </Field>
         <Field label="Email" htmlFor="email" error={errors.email?.message}>
@@ -109,7 +135,7 @@ export function SignupForm({ callbackUrl, portal = "CUSTOMER" }: { callbackUrl: 
 
       <p className="mt-6 text-center text-sm text-ink-500">
         Already have an account?{" "}
-        <Link href={worker ? "/worker/login" : `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="font-medium text-brand-700 hover:underline">
+        <Link href={copy.loginHref(callbackUrl)} className="font-medium text-brand-700 hover:underline">
           Log in
         </Link>
       </p>

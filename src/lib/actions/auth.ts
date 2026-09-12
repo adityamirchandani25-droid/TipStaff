@@ -19,7 +19,7 @@ export interface ActionResult {
 
 export async function login(
   input: unknown,
-  portal: "CUSTOMER" | "PROVIDER" = "CUSTOMER",
+  portal: "CUSTOMER" | "PROVIDER" | "COMPANY" = "CUSTOMER",
 ): Promise<ActionResult> {
   const parsed = loginSchema.safeParse(input);
   if (!parsed.success) {
@@ -82,6 +82,10 @@ export async function signUpWorker(input: unknown): Promise<ActionResult> {
   return createAccount(input, "PROVIDER", "/worker/dashboard");
 }
 
+export async function signUpCompany(input: unknown): Promise<ActionResult> {
+  return createAccount(input, "COMPANY", "/company/dashboard");
+}
+
 export async function signOut() {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut({ scope: "local" });
@@ -90,7 +94,7 @@ export async function signOut() {
 
 async function createAccount(
   input: unknown,
-  role: "CUSTOMER" | "PROVIDER",
+  role: "CUSTOMER" | "PROVIDER" | "COMPANY",
   callbackUrl?: string,
 ): Promise<ActionResult> {
   const parsed = signUpSchema.safeParse(input);
@@ -163,14 +167,14 @@ async function createAccount(
       await ensureAccountProfile(data.user, role);
     } catch (profileError) {
       console.error(
-        "Supabase user created but TipStaff profile creation failed",
+        "Supabase user created but FixItFast profile creation failed",
         profileError,
       );
       if (data.session) await supabase.auth.signOut({ scope: "local" });
       return {
         ok: false,
         error:
-          "Your login was created, but the TipStaff profile could not be saved. Contact support before trying again.",
+          "Your login was created, but the FixItFast profile could not be saved. Contact support before trying again.",
       };
     }
 
@@ -185,11 +189,13 @@ async function createAccount(
 }
 
 function invalidPortalLogin(
-  portal: "CUSTOMER" | "PROVIDER",
+  portal: "CUSTOMER" | "PROVIDER" | "COMPANY",
 ): ActionResult {
+  const portalLabel =
+    portal === "PROVIDER" ? "worker" : portal === "COMPANY" ? "company" : "customer";
   return {
     ok: false,
-    error: `Those details don’t match a ${portal === "PROVIDER" ? "worker" : "customer"} account. Check your login details or switch account type.`,
+    error: `Those details don’t match a ${portalLabel} account. Check your login details or switch account type.`,
   };
 }
 

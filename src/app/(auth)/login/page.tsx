@@ -2,7 +2,7 @@ import { safeCustomerCallback } from "@/lib/auth-routing";
 import type { Metadata } from "next";
 import { LoginForm } from "@/components/auth/login-form";
 
-export const metadata: Metadata = { title: "Log in — TipStaff" };
+export const metadata: Metadata = { title: "Log in — FixItFast" };
 
 export default async function LoginPage({
   searchParams,

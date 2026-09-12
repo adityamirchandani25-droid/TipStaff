@@ -2,7 +2,25 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "../src/generated/prisma/client";
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+// Mirror src/lib/prisma.ts: @prisma/adapter-pg ignores the `?schema=` query
+// param, so the target schema has to be passed as an explicit option or every
+// query lands in `public`.
+const connectionString = process.env.DATABASE_URL;
+
+function databaseSchema(url?: string) {
+  if (!url) return undefined;
+  try {
+    return new URL(url).searchParams.get("schema") ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+const schema = databaseSchema(connectionString);
+const adapter = new PrismaPg(
+  { connectionString },
+  schema ? { schema } : undefined,
+);
 const prisma = new PrismaClient({ adapter });
 
 // All seeded accounts share this password so you can log in locally

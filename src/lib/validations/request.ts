@@ -26,6 +26,7 @@ export const createRequestSchema = z.object({
   photos: z.array(z.string().max(5_600_000, "Each photo must be under 4MB").regex(/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/, "Choose a JPG, PNG, or WebP photo")).max(3, "Up to 3 photos").default([]),
   addressId: z.string().optional(),
   newAddress: addressInputSchema.optional(),
+  paymentIntentId: z.string().min(1, "Payment is required before sending a request"),
 });
 
 export type CreateRequestInput = z.infer<typeof createRequestSchema>;

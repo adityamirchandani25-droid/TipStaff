@@ -18,6 +18,7 @@ datasource db {
 enum Role {
   CUSTOMER
   PROVIDER
+  COMPANY
   ADMIN
 }
 
@@ -107,13 +108,31 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  addresses        Address[]
-  serviceRequests  ServiceRequest[] @relation("CustomerRequests")
-  provider         Provider?
-  reviewsWritten   Review[]         @relation("ReviewAuthor")
-  messages         Message[]
+  addresses       Address[]
+  serviceRequests ServiceRequest[] @relation("CustomerRequests")
+  provider        Provider?
+  company         Company?
+  reviewsWritten  Review[]         @relation("ReviewAuthor")
+  messages        Message[]
 
   @@index([role])
+}
+
+/// A staffing company that registers on the platform and adds its own
+/// workers (each worker still gets its own User + Provider, just scoped
+/// under this company instead of standing alone).
+model Company {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workers Provider[]
+
+  @@index([userId])
 }
 
 model Address {
@@ -140,31 +159,34 @@ model Address {
 // ---------------------------------------------------------------------------
 
 model Provider {
-  id               String                  @id @default(cuid())
-  userId           String                  @unique
-  user             User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categories       ServiceCategory[]
-  bio              String?
-  serviceRadiusMi  Float                   @default(15)
-  approvalStatus   ProviderApprovalStatus  @default(PENDING)
-  isOnline         Boolean                 @default(false)
-  currentLat       Float?
-  currentLng       Float?
+  id                String                 @id @default(cuid())
+  userId            String                 @unique
+  user              User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId         String?
+  company           Company?               @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  categories        ServiceCategory[]
+  bio               String?
+  serviceRadiusMi   Float                  @default(15)
+  approvalStatus    ProviderApprovalStatus @default(PENDING)
+  isOnline          Boolean                @default(false)
+  currentLat        Float?
+  currentLng        Float?
   locationUpdatedAt DateTime?
-  rating           Float                   @default(0)
-  ratingCount      Int                     @default(0)
-  jobsCompleted    Int                     @default(0)
-  createdAt        DateTime                @default(now())
-  updatedAt        DateTime                @updatedAt
+  rating            Float                  @default(0)
+  ratingCount       Int                    @default(0)
+  jobsCompleted     Int                    @default(0)
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
 
-  certifications    Certification[]
-  dispatchAttempts  DispatchAttempt[]
-  jobs              Job[]
-  payouts           Payout[]
-  reviewsReceived   Review[]                @relation("ReviewSubject")
+  certifications   Certification[]
+  dispatchAttempts DispatchAttempt[]
+  jobs             Job[]
+  payouts          Payout[]
+  reviewsReceived  Review[]          @relation("ReviewSubject")
 
   @@index([approvalStatus])
   @@index([isOnline])
+  @@index([companyId])
 }
 
 model Certification {
@@ -203,6 +225,7 @@ model ServiceRequest {
 
   dispatchAttempts DispatchAttempt[]
   job              Job?
+  payment          Payment?
 
   @@index([status])
   @@index([customerId])
@@ -211,17 +234,17 @@ model ServiceRequest {
 /// One offer, to one provider, for one request — created and expired in
 /// sequence as the matching engine cascades down the ranked candidate list.
 model DispatchAttempt {
-  id         String         @id @default(cuid())
-  requestId  String
-  request    ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  providerId String
-  provider   Provider       @relation(fields: [providerId], references: [id])
-  rank       Int // position in the candidate ranking for this request
-  status     DispatchStatus @default(OFFERED)
-  payout     Decimal        @db.Decimal(10, 2)
-  distanceMi Float
-  offeredAt  DateTime       @default(now())
-  expiresAt  DateTime
+  id          String         @id @default(cuid())
+  requestId   String
+  request     ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  providerId  String
+  provider    Provider       @relation(fields: [providerId], references: [id])
+  rank        Int // position in the candidate ranking for this request
+  status      DispatchStatus @default(OFFERED)
+  payout      Decimal        @db.Decimal(10, 2)
+  distanceMi  Float
+  offeredAt   DateTime       @default(now())
+  expiresAt   DateTime
   respondedAt DateTime?
 
   @@index([requestId])
@@ -229,23 +252,23 @@ model DispatchAttempt {
 }
 
 model Job {
-  id          String    @id @default(cuid())
-  requestId   String    @unique
-  request     ServiceRequest @relation(fields: [requestId], references: [id])
-  providerId  String
-  provider    Provider  @relation(fields: [providerId], references: [id])
-  status      JobStatus @default(MATCHED)
-  beforePhotos String[] @default([])
-  afterPhotos  String[] @default([])
-  finalPrice  Decimal?  @db.Decimal(10, 2)
-  tip         Decimal?  @db.Decimal(10, 2)
-  matchedAt   DateTime  @default(now())
-  enRouteAt   DateTime?
-  arrivedAt   DateTime?
-  startedAt   DateTime?
-  completedAt DateTime?
-  cancelledAt DateTime?
-  createdAt   DateTime  @default(now())
+  id           String         @id @default(cuid())
+  requestId    String         @unique
+  request      ServiceRequest @relation(fields: [requestId], references: [id])
+  providerId   String
+  provider     Provider       @relation(fields: [providerId], references: [id])
+  status       JobStatus      @default(MATCHED)
+  beforePhotos String[]       @default([])
+  afterPhotos  String[]       @default([])
+  finalPrice   Decimal?       @db.Decimal(10, 2)
+  tip          Decimal?       @db.Decimal(10, 2)
+  matchedAt    DateTime       @default(now())
+  enRouteAt    DateTime?
+  arrivedAt    DateTime?
+  startedAt    DateTime?
+  completedAt  DateTime?
+  cancelledAt  DateTime?
+  createdAt    DateTime       @default(now())
 
   statusEvents JobStatusEvent[]
   messages     Message[]
@@ -285,17 +308,23 @@ model Message {
 // Money and feedback
 // ---------------------------------------------------------------------------
 
+/// Charged at request submission (for the starting estimate) rather than at
+/// job completion — there's no matching engine yet to produce a Job, so
+/// `jobId` is filled in later once dispatch exists; `requestId` is the
+/// payment's real anchor today.
 model Payment {
-  id                    String        @id @default(cuid())
-  jobId                 String        @unique
-  job                   Job           @relation(fields: [jobId], references: [id])
-  amount                Decimal       @db.Decimal(10, 2)
-  tip                   Decimal?      @db.Decimal(10, 2)
-  currency              String        @default("usd")
-  stripePaymentIntentId String?       @unique
-  status                PaymentStatus @default(PENDING)
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
+  id                    String          @id @default(cuid())
+  jobId                 String?         @unique
+  job                   Job?            @relation(fields: [jobId], references: [id])
+  requestId             String?         @unique
+  request               ServiceRequest? @relation(fields: [requestId], references: [id])
+  amount                Decimal         @db.Decimal(10, 2)
+  tip                   Decimal?        @db.Decimal(10, 2)
+  currency              String          @default("usd")
+  stripePaymentIntentId String?         @unique
+  status                PaymentStatus   @default(PENDING)
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
 
   @@index([status])
 }

@@ -1,14 +1,16 @@
-export type AccountPortal = "CUSTOMER" | "PROVIDER";
+export type AccountPortal = "CUSTOMER" | "PROVIDER" | "COMPANY";
 
 export function accountHome(role?: string) {
-  return role === "PROVIDER" ? "/worker/dashboard" : "/dashboard";
+  if (role === "PROVIDER") return "/worker/dashboard";
+  if (role === "COMPANY") return "/company/dashboard";
+  return "/dashboard";
 }
 
 export function safeCustomerCallback(raw: unknown) {
   if (typeof raw !== "string" || /[\\\u0000-\u0020]/.test(raw)) return "/dashboard";
   try {
-    const url = new URL(raw, "https://tipstaff.local");
-    if (url.origin !== "https://tipstaff.local") return "/dashboard";
+    const url = new URL(raw, "https://fixitfast.local");
+    if (url.origin !== "https://fixitfast.local") return "/dashboard";
     if (!(url.pathname === "/dashboard" || url.pathname.startsWith("/request/"))) return "/dashboard";
     return `${url.pathname}${url.search}`;
   } catch {
@@ -19,12 +21,13 @@ export function safeCustomerCallback(raw: unknown) {
 export function safeAuthCallback(raw: unknown, fallback = "/dashboard") {
   if (typeof raw !== "string" || /[\\\u0000-\u0020]/.test(raw)) return fallback;
   try {
-    const url = new URL(raw, "https://tipstaff.local");
-    if (url.origin !== "https://tipstaff.local") return fallback;
+    const url = new URL(raw, "https://fixitfast.local");
+    if (url.origin !== "https://fixitfast.local") return fallback;
     const allowed =
       url.pathname === "/dashboard" ||
       url.pathname.startsWith("/request/") ||
-      url.pathname === "/worker/dashboard";
+      url.pathname === "/worker/dashboard" ||
+      url.pathname === "/company/dashboard";
     return allowed ? `${url.pathname}${url.search}` : fallback;
   } catch {
     return fallback;

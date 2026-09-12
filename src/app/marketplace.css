@@ -68,6 +68,25 @@
 .landing-choice-list svg { flex-shrink: 0; color: #5486c6; margin-top: 2px; }
 .landing-choice-list h3 { font-size: 14px; font-weight: 600; }
 .landing-choice-list p { font-size: 12px; line-height: 1.8; color: #778ba4; margin-top: 8px; }
+.landing-contact { position: relative; overflow: hidden; max-width: 1140px; margin: 0 auto 72px; padding: 58px; border-radius: 18px; background: #0b2340; color: white; display: grid; grid-template-columns: .9fr 1.1fr; gap: 70px; box-shadow: 0 24px 60px -35px #06182eaa; }
+.landing-contact::after { content: ""; position: absolute; width: 320px; height: 320px; left: -170px; bottom: -220px; border: 55px solid #146ee933; border-radius: 50%; pointer-events: none; }
+.landing-contact-intro { position: relative; z-index: 1; }
+.landing-contact-kicker { display: block; color: #78b4ff; font-size: 10px; font-weight: 700; letter-spacing: 2px; margin-bottom: 19px; }
+.landing-contact h2 { font-family: var(--font-heading), sans-serif; font-size: clamp(34px,4vw,48px); font-weight: 650; line-height: 1.08; letter-spacing: -1.8px; }
+.landing-contact h2 span { color: #62a6ff; }
+.landing-contact-intro > p { max-width: 370px; margin-top: 21px; color: #a9bdd5; font-size: 14px; line-height: 1.8; }
+.landing-contact-mark { display: flex; align-items: center; gap: 9px; margin-top: 30px; color: #7f9dbc; font-size: 12px; }
+.landing-contact-mark svg { color: #62a6ff; }
+.landing-contact-list { display: flex; flex-direction: column; position: relative; z-index: 1; }
+.landing-contact-card { display: grid; grid-template-columns: 36px 1fr 44px; align-items: center; gap: 16px; min-height: 94px; border-top: 1px solid #ffffff1f; color: white; transition: background .2s, padding .2s, transform .2s; }
+.landing-contact-card:last-child { border-bottom: 1px solid #ffffff1f; }
+.landing-contact-card:hover { background: #ffffff0b; padding-inline: 14px; transform: translateX(3px); }
+.landing-contact-number { font-size: 10px; color: #5f82a8; letter-spacing: 1px; }
+.landing-contact-card strong { display: block; font-size: 17px; font-weight: 600; letter-spacing: -.2px; }
+.landing-contact-card .landing-contact-role { display: block; margin-top: 5px; color: #78b4ff; font-size: 11px; font-weight: 650; letter-spacing: .7px; text-transform: uppercase; }
+.landing-contact-card .landing-contact-phone { display: block; margin-top: 5px; color: #94abc4; font-size: 13px; letter-spacing: .4px; }
+.landing-contact-call { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: #0d6ff0; color: white; transition: background .2s, transform .2s; }
+.landing-contact-card:hover .landing-contact-call { background: #2d89ff; transform: rotate(-8deg); }
 .landing-last { max-width: 1200px; padding: 0 30px 60px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
 .landing-last h2 { font-size: 32px; }
 .landing-last p { color: #788ba3; font-size: 13px; margin-top: 12px; }
@@ -168,7 +187,7 @@
 .booking-preview-done dd { color: #416895; }
 .demo-booking-disclosure { background: #f2f6fc; color: #6f8aab; padding: 16px; border-radius: 7px; margin: 20px 0; font-size: 11px; line-height: 1.8; }
 .directory-general-request { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 10px; color: #537cab; margin-top: 19px; }
-@media (max-width: 1050px) { .market-header > div { gap: 30px; } .market-header nav { gap: 20px; } .service-category-bar { gap: 23px; } .landing-hero { gap: 35px; } .landing-service-strip > div { gap: 20px; } .landing-choice { margin-inline: 30px; gap: 40px; padding: 35px; } .landing-footer { margin-inline: 30px; } .directory-workspace { grid-template-columns: 355px minmax(0,1fr); } }
+@media (max-width: 1050px) { .market-header > div { gap: 30px; } .market-header nav { gap: 20px; } .service-category-bar { gap: 23px; } .landing-hero { gap: 35px; } .landing-service-strip > div { gap: 20px; } .landing-choice, .landing-contact { margin-inline: 30px; gap: 40px; padding: 35px; } .landing-footer { margin-inline: 30px; } .directory-workspace { grid-template-columns: 355px minmax(0,1fr); } }
 @media (max-width: 760px) {
   .market-header > div { min-height: 70px; padding-inline: 20px; gap: 15px; }
   .market-header nav { display: none; }
@@ -197,6 +216,14 @@
   .landing-steps { grid-template-columns: 1fr; gap: 20px; margin-top: 20px; }
   .landing-steps article { padding-bottom: 0; }
   .landing-choice { grid-template-columns: 1fr; margin: 0 22px 45px; padding: 29px; gap: 32px; }
+  .landing-contact { grid-template-columns: 1fr; margin: 0 22px 48px; padding: 32px 25px 26px; gap: 28px; }
+  .landing-contact-intro > p { font-size: 13px; }
+  .landing-contact-mark { margin-top: 20px; }
+  .landing-contact-card { min-height: 84px; grid-template-columns: 28px 1fr 40px; gap: 11px; }
+  .landing-contact-call { width: 40px; height: 40px; }
+  .landing-contact-card strong { font-size: 15px; }
+  .landing-contact-card .landing-contact-role { font-size: 10px; }
+  .landing-contact-card .landing-contact-phone { font-size: 12px; }
   .landing-last { flex-direction: column; align-items: flex-start; padding: 0 22px 42px; gap: 23px; }
   .landing-footer { margin-inline: 22px; gap: 12px; flex-wrap: wrap; }
   .landing-footer > a:last-child { font-size: 10px; }

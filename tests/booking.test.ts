@@ -4,7 +4,7 @@ import { estimateAllServices, estimatePriceRange } from "../src/lib/pricing";
 import { CATEGORY_ORDER, URGENCY_ORDER } from "../src/lib/categories";
 import { createRequestSchema } from "../src/lib/validations/request";
 
-const base = { category: "PLUMBING", urgency: "THIS_WEEK", description: "The kitchen tap is leaking.", addressId: "test-address" };
+const base = { category: "PLUMBING", urgency: "THIS_WEEK", description: "The kitchen tap is leaking.", addressId: "test-address", paymentIntentId: "pi_test_123" };
 test("the displayed price table agrees with request pricing for every choice", () => {
   const at = new Date(2026, 8, 7, 15, 0);
   const table = estimateAllServices(at);
@@ -26,4 +26,9 @@ test("requests require useful details and valid category and timing", () => {
   assert.equal(createRequestSchema.safeParse({ ...base, description: "" }).success, false);
   assert.equal(createRequestSchema.safeParse({ ...base, category: "UNKNOWN" }).success, false);
   assert.equal(createRequestSchema.safeParse({ ...base, urgency: "SOMETIME" }).success, false);
+});
+test("a request can't be created without a payment intent", () => {
+  const withoutPayment = { category: base.category, urgency: base.urgency, description: base.description, addressId: base.addressId };
+  assert.equal(createRequestSchema.safeParse(withoutPayment).success, false);
+  assert.equal(createRequestSchema.safeParse({ ...base, paymentIntentId: "" }).success, false);
 });

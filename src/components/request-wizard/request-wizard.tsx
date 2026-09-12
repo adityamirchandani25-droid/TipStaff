@@ -22,6 +22,7 @@ import {
 } from "@/components/request-wizard/types";
 import { addressInputSchema, type AddressInput } from "@/lib/validations/request";
 import { createServiceRequest } from "@/lib/actions/requests";
+import { PaymentStep } from "@/components/request-wizard/payment-step";
 
 export function RequestWizard({
   addresses,
@@ -88,7 +89,10 @@ export function RequestWizard({
     return false;
   }
 
-  async function handleSubmit() {
+  // Called once Stripe confirms the charge succeeded — the request itself
+  // is only created after that, and the payment is re-verified server-side
+  // rather than trusted from this client callback.
+  async function submitRequestWithPayment(paymentIntentId: string) {
     if (submitting) return;
     setSubmitError(null);
     const { category, urgency } = state;
@@ -119,23 +123,23 @@ export function RequestWizard({
 
     setSubmitting(true);
     try {
-    const result = await createServiceRequest({
-      category,
-      description: state.description,
-      urgency,
-      photos: state.photos,
-      addressId,
-      newAddress,
-    });
-    setSubmitting(false);
+      const result = await createServiceRequest({
+        category,
+        description: state.description,
+        urgency,
+        photos: state.photos,
+        addressId,
+        newAddress,
+        paymentIntentId,
+      });
 
-    if (!result.ok) {
-      setSubmitError(result.error ?? "Something went wrong. Try again.");
-      return;
-    }
-    router.push(`/request/${result.requestId}`);
+      if (!result.ok) {
+        setSubmitError(result.error ?? "Your payment went through, but the request couldn’t be saved. Contact support with this in mind before paying again.");
+        return;
+      }
+      router.push(`/request/${result.requestId}`);
     } catch {
-      setSubmitError("Your request couldn’t be sent. Your details are still here — please try again.");
+      setSubmitError("Your payment went through, but the request couldn’t be saved. Contact support before paying again.");
     } finally {
       setSubmitting(false);
     }
@@ -205,11 +209,21 @@ export function RequestWizard({
               />
             )}
             {step === 4 && (
-              <div className="request-review"><h2>Review your request</h2><p>Check the details before you send. This won’t confirm an appointment or collect payment.</p>
+              <div className="request-review"><h2>Review and pay</h2><p>Check the details, then pay the starting estimate to send your request. This won’t confirm a worker or arrival time — that’s still to come.</p>
                 <div className="review-row"><div><span>Service & timing</span><strong>{state.category && CATEGORY_LABELS[state.category]} · {state.urgency && URGENCY_LABELS[state.urgency]}</strong></div><button type="button" onClick={() => setStep(0)}>Edit service</button><button type="button" onClick={() => setStep(2)}>Edit timing</button></div>
                 <div className="review-row"><div><span>Job details</span><p>{state.description}</p>{state.photos.length > 0 && <small>{state.photos.length} photo{state.photos.length > 1 ? "s" : ""} attached</small>}</div><button type="button" onClick={() => setStep(1)}>Edit</button></div>
                 <div className="review-row"><div><span>Service address</span><p>{selectedAddress?.line1}{selectedAddress?.line2 ? `, ${selectedAddress.line2}` : ""}<br />{selectedAddress?.city}, {selectedAddress?.state} {selectedAddress?.postalCode}</p></div><button type="button" onClick={() => setStep(3)}>Edit</button></div>
-                <div className="review-next"><Check size={18} /><p>Your request will be saved in My requests. Worker assignment and arrival time are still to be confirmed.</p></div>
+                <div className="review-next"><Check size={18} /><p>Once paid, your request will be saved in My requests. Worker assignment and arrival time are still to be confirmed.</p></div>
+                {state.category && state.urgency && !submitting && (
+                  <div className="review-payment">
+                    <PaymentStep category={state.category} urgency={state.urgency} onPaid={submitRequestWithPayment} />
+                  </div>
+                )}
+                {submitting && (
+                  <div className="review-payment flex items-center gap-2 text-sm text-ink-600">
+                    <Loader2 className="h-4 w-4 animate-spin" /> Payment received — sending your request…
+                  </div>
+                )}
               </div>
             )}
           </motion.div>
@@ -223,18 +237,13 @@ export function RequestWizard({
         <Button variant="ghost" onClick={goBack} disabled={step === 0 || submitting}>
           <ChevronLeft className="h-4 w-4" strokeWidth={2} /> Back
         </Button>
-        {!isLastStep ? (
+        {!isLastStep && (
           <Button onClick={goNext}>
             {step === 3 ? "Review request" : "Continue"} <ChevronRight className="h-4 w-4" strokeWidth={2} />
           </Button>
-        ) : (
-          <Button onClick={handleSubmit} disabled={submitting}>
-            {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-            {submitting ? "Submitting..." : "Send request"}
-          </Button>
         )}
       </div>
-      </div><aside className="request-sidebar"><h2>Request summary</h2><dl><div><dt>Service</dt><dd>{state.category ? CATEGORY_LABELS[state.category] : "Not selected"}</dd></div><div><dt>Timing</dt><dd>{state.urgency ? URGENCY_LABELS[state.urgency] : "Not selected"}</dd></div></dl><div className="request-summary-price"><span>Callout + first hour estimate</span><strong>{estimate ? `$${estimate.low}–$${estimate.high}` : "Choose a service and timing"}</strong><p>Parts and extra time are additional. The final cost depends on the work required.</p></div><div className="payment-note"><LockKeyhole size={16} /><span>No payment is collected with this request.</span></div><p className="request-timing-note">Requested timing is subject to worker availability.</p></aside></div>
+      </div><aside className="request-sidebar"><h2>Request summary</h2><dl><div><dt>Service</dt><dd>{state.category ? CATEGORY_LABELS[state.category] : "Not selected"}</dd></div><div><dt>Timing</dt><dd>{state.urgency ? URGENCY_LABELS[state.urgency] : "Not selected"}</dd></div></dl><div className="request-summary-price"><span>Callout + first hour estimate</span><strong>{estimate ? `$${estimate.low}–$${estimate.high}` : "Choose a service and timing"}</strong><p>Parts and extra time are additional. The final cost depends on the work required.</p></div><div className="payment-note"><LockKeyhole size={16} /><span>The starting estimate is charged when you send your request.</span></div><p className="request-timing-note">Requested timing is subject to worker availability.</p></aside></div>
     </div>
   );
 }

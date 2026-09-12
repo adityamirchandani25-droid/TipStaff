@@ -8,8 +8,6 @@
 [data-theme="dark"] .worker-entry { color: #6e839f; }
 [data-theme="dark"] .account-entry { color: #eef1f6; background: #3888f8; border-color: #3888f8; box-shadow: 0 2px 3px #3888f812; }
 [data-theme="dark"] .account-entry:hover { background: #1c76f7; border-color: #1c76f7; }
-[data-theme="dark"] .ts-logo { color: #cfddef; }
-[data-theme="dark"] .ts-logo svg { color: #3888f8; }
 [data-theme="dark"] .product-overline { color: #8598ad; }
 [data-theme="dark"] .booking-intro h1 { color: #cfddef; }
 [data-theme="dark"] .booking-intro p { color: #8290a4; }

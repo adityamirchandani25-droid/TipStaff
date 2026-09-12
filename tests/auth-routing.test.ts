@@ -4,6 +4,7 @@ import { accountHome, safeAuthCallback, safeCustomerCallback } from "../src/lib/
 
 test("each portal has a separate protected destination", () => {
   assert.equal(accountHome("PROVIDER"), "/worker/dashboard");
+  assert.equal(accountHome("COMPANY"), "/company/dashboard");
   assert.equal(accountHome("CUSTOMER"), "/dashboard");
 });
 
@@ -14,8 +15,9 @@ test("booking callbacks retain category and search but reject unsafe destination
   }
 });
 
-test("confirmation callbacks allow only TipStaff account destinations", () => {
+test("confirmation callbacks allow only FixItFast account destinations", () => {
   assert.equal(safeAuthCallback("/worker/dashboard", "/dashboard"), "/worker/dashboard");
+  assert.equal(safeAuthCallback("/company/dashboard", "/dashboard"), "/company/dashboard");
   assert.equal(safeAuthCallback("/request/new?category=HVAC", "/dashboard"), "/request/new?category=HVAC");
   for (const raw of ["//evil.example", "https://evil.example", "/api/keys", "/services", undefined]) {
     assert.equal(safeAuthCallback(raw, "/worker/dashboard"), "/worker/dashboard");

@@ -2,7 +2,6 @@
    Regenerate with scripts/generate-dark-mode.py (run from src/app/) if globals.css changes
    significantly — do not hand-edit color values here. */
 [data-theme="dark"] a:focus-visible, [data-theme="dark"] button:focus-visible, [data-theme="dark"] summary:focus-visible, [data-theme="dark"] select:focus-visible { outline: 3px solid #9dbaf1; }
-[data-theme="dark"] .ts-logo { color: #d0ddee; }
 [data-theme="dark"] .skip-link { background: #121212; }
 [data-theme="dark"] .product-home { background: #13161c; }
 [data-theme="dark"] .product-header { background: #121212; }
@@ -68,6 +67,7 @@
 [data-theme="dark"] .review-row > div > span { color: #8995a6; }
 [data-theme="dark"] .review-row small { color: #8995a6; }
 [data-theme="dark"] .review-row > button { color: #557de2; }
+[data-theme="dark"] .review-payment { border-top: 1px solid #1b222d; }
 [data-theme="dark"] .review-next { background: #0d1726; }
 [data-theme="dark"] .review-next svg { color: #557de2; }
 [data-theme="dark"] .review-next p { color: #909db0; }
@@ -91,6 +91,10 @@
 [data-theme="dark"] .ts-worker-stats article { border: 1px solid #1c2530; background: #121212; }
 [data-theme="dark"] .ts-worker-stats svg { color: #93a1b7; }
 [data-theme="dark"] .ts-worker-stats span { color: #8995a6; }
+[data-theme="dark"] .ts-location-toggle button { border: 1px solid #1c2530; background: #121212; color: #b6bfcc; }
+[data-theme="dark"] .ts-location-toggle button:hover { border-color: #33415a; }
+[data-theme="dark"] .ts-location-toggle button.is-sharing { background: #16a34a; border-color: #16a34a; color: white; }
+[data-theme="dark"] .ts-location-toggle p { color: #8995a6; }
 [data-theme="dark"] .ts-worker-notice { background: #0c172b; border: 1px solid #12223b; }
 [data-theme="dark"] .ts-worker-notice > svg { color: #8499bd; }
 [data-theme="dark"] .ts-worker-notice p { color: #9ba7b7; }
@@ -100,3 +104,15 @@
 [data-theme="dark"] .ts-worker-jobs > article { border-bottom: 1px solid #1c2530; }
 [data-theme="dark"] .ts-worker-jobs > article p { color: #9ba7b7; }
 [data-theme="dark"] .ts-worker-jobs > article > span { color: #6d8cc5; }
+[data-theme="dark"] .ts-add-worker { border: 1px solid #1c2530; background: #121212; }
+[data-theme="dark"] .ts-roster { border: 1px solid #1c2530; background: #121212; }
+[data-theme="dark"] .ts-roster-error { background: #2a1414; color: #f3a5a5; }
+[data-theme="dark"] .ts-roster-row { border-bottom: 1px solid #1c2530; }
+[data-theme="dark"] .ts-roster-row p { color: #9ba7b7; }
+[data-theme="dark"] .ts-roster-category { color: #6d8cc5; }
+[data-theme="dark"] .ts-roster-dot { background: #3a4353; }
+[data-theme="dark"] .ts-roster-status { background: #1c2530; color: #8995a6; }
+[data-theme="dark"] .ts-roster-status.status-approved { background: #0f2a18; color: #4ade80; }
+[data-theme="dark"] .ts-roster-status.status-pending { background: #2a2211; color: #facc15; }
+[data-theme="dark"] .ts-roster-status.status-suspended, [data-theme="dark"] .ts-roster-status.status-rejected { background: #2a1414; color: #f3a5a5; }
+[data-theme="dark"] .ts-roster-row button:hover { background: #2a1414; color: #f3a5a5; }

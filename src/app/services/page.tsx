@@ -6,7 +6,7 @@ import "leaflet/dist/leaflet.css";
 import "../marketplace.css";
 import "../marketplace.dark.css";
 
-export const metadata = { title: "Find home services — TipStaff" };
+export const metadata = { title: "Find home services — FixItFast" };
 export default async function ServicesPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
   const category = typeof params.category === "string" && (CATEGORY_ORDER as readonly string[]).includes(params.category) ? params.category as ServiceCategory : "ALL";

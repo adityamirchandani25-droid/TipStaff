@@ -1,11 +1,8 @@
 import Image from "next/image";
-import { existsSync } from "node:fs";
-import path from "node:path";
-import { Wrench } from "lucide-react";
 
-/** Save the supplied, unmodified logo at public/images/tipstaff-logo.png. */
 export function BrandLogo() {
-  const available = existsSync(path.join(process.cwd(), "public/images/tipstaff-logo.png"));
-  if (!available) return <span className="ts-logo"><Wrench size={25} aria-hidden="true" />TipStaff</span>;
-  return <span className="ts-brand-image"><Image src="/images/tipstaff-logo.png" alt="TipStaff" width={2056} height={765} priority unoptimized /></span>;
+  return <span className="ts-logo" role="img" aria-label="FixItFast">
+    <Image className="ts-logo-light" src="/images/fixitfast-logo-light.png" alt="" width={2167} height={725} priority />
+    <Image className="ts-logo-dark" src="/images/fixitfast-logo-dark.png" alt="" width={2168} height={725} priority />
+  </span>;
 }

@@ -1,19 +1,22 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { ArrowRight, Plus, ClipboardList } from "lucide-react";
+import "leaflet/dist/leaflet.css";
 import { auth } from "@/lib/auth";
-import { listMyRequests } from "@/lib/actions/requests";
+import { listMyRequests, listMyAddresses } from "@/lib/actions/requests";
 import { CATEGORY_LABELS } from "@/lib/categories";
 import { CategoryIcon } from "@/components/category-icon";
 import { RequestStatusBadge } from "@/components/request-status-badge";
 import { UrgencyBadge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { NearbyWorkersMap } from "@/components/customer/nearby-workers-map";
 
 export default async function DashboardPage() {
   const session = await auth();
   const firstName = session?.user?.name?.split(" ")[0] ?? "there";
-  const requests = await listMyRequests();
+  const [requests, addresses] = await Promise.all([listMyRequests(), listMyAddresses()]);
+  const homeBase = addresses.find((address) => address.isDefault) ?? addresses[0];
 
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-10">
@@ -39,6 +42,14 @@ export default async function DashboardPage() {
           </Link>
         </CardContent>
       </Card>
+
+      <div className="mt-10">
+        <h2 className="text-base font-semibold text-ink-900">Workers near you</h2>
+        <p className="mt-1 text-sm text-ink-500">Live locations of workers currently on the clock within 50 miles.</p>
+        <div className="mt-3">
+          <NearbyWorkersMap fallback={homeBase ? { lat: homeBase.lat, lng: homeBase.lng } : null} />
+        </div>
+      </div>
 
       <div className="mt-10">
         <h2 className="text-base font-semibold text-ink-900">

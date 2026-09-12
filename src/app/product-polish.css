@@ -31,12 +31,7 @@
 .worker-entry { color: #53657d; }
 .account-entry { color: #fff; background: #0866eb; border-color: #0866eb; padding: 12px 17px; box-shadow: 0 2px 3px #0866eb12; }
 .account-entry:hover { background: #0759cf; border-color: #0759cf; }
-.ts-logo { color: #142b49; }
-.ts-logo svg { color: #0866eb; }
-
 /* Fit the supplied artwork to the navigation without changing the source. */
-.ts-brand-image { position: relative; width: 166px; height: 48px; overflow: hidden; align-items: center; }
-.ts-brand-image img { position: absolute; width: 113%; max-width: none; height: auto; left: -7%; top: -11px; }
 
 .product-main { padding-top: 39px; }
 .booking-intro { margin-bottom: 31px; }
@@ -103,8 +98,6 @@
 .product-footer { border-top-color: #e0e7f0; padding-block: 24px 30px; }
 .product-footer > div > span, .product-footer p { font-size: 11px; color: #71839a; }
 .product-footer p a { color: #1f5caf; font-weight: 550; }
-.product-footer .ts-brand-image { width: 135px; height: 40px; }
-.product-footer .ts-brand-image img { top: -8px; }
 
 /* Carry the same visual language through login, review, and the workspaces. */
 .ts-auth-page, .ts-worker-page { background: #f7f9fc; }
@@ -152,8 +145,6 @@
   .product-header > div { min-height: 70px; gap: 12px; }
   .product-account { gap: 14px; }
   .account-entry { padding: 10px 11px; }
-  .ts-brand-image { width: 121px; height: 36px; }
-  .ts-brand-image img { top: -7px; }
   .product-main { padding-top: 29px; }
   .booking-intro { margin-bottom: 28px; }
   .booking-intro h1 { font-size: 34px; line-height: 1.12; letter-spacing: -1.2px; }

@@ -21,9 +21,9 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "TipStaff — On-demand home repair",
+  title: "FixItFast — On-demand home repair",
   description:
-    "Choose a home service, see a starting estimate, and manage your requests with TipStaff.",
+    "Choose a home service, see a starting estimate, and manage your requests with FixItFast.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* TipStaff: clear blue actions and neutral surfaces. */
+/* FixItFast: clear blue actions and neutral surfaces. */
 @theme {
   --font-sans: var(--font-sans);
   --font-display: var(--font-sans);
@@ -61,10 +61,11 @@ a, button, input, summary, select, textarea { -webkit-tap-highlight-color: trans
 button, summary { cursor: pointer; }
 button:disabled { cursor: not-allowed; }
 a:focus-visible, button:focus-visible, summary:focus-visible, select:focus-visible { outline: 3px solid #749deb; outline-offset: 3px; }
-.ts-logo { display: inline-flex; align-items: center; gap: 8px; font-size: 25px; font-weight: 800; letter-spacing: -1.1px; color: #152844; }
-.ts-logo svg { color: var(--product-blue); }
-.ts-brand-image { display: inline-flex; width: 168px; flex-shrink: 0; mix-blend-mode: multiply; }
-.ts-brand-image img { width: 100%; height: auto; }
+.ts-logo { display: inline-flex; align-items: center; flex-shrink: 0; line-height: 0; }
+.ts-logo img { display: block; width: 162px; height: auto; }
+.ts-logo-dark { display: none !important; }
+[data-theme="dark"] .ts-logo-light { display: none; }
+[data-theme="dark"] .ts-logo-dark { display: block !important; }
 .skip-link { position: fixed; top: -60px; left: 20px; z-index: 100; padding: 12px; background: white; }
 .skip-link:focus { top: 10px; }
 .product-home { min-height: 100vh; background: #f7f8fa; }
@@ -145,8 +146,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, select:focus-visib
 .booking-questions details p { font-size: 12px; line-height: 1.8; color: #758194; padding: 0 20px 16px 0; }
 .product-footer { max-width: 1164px; border-top: 1px solid #dfe5ed; padding: 25px 0 32px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 25px; }
 .product-footer > div { display: flex; align-items: center; gap: 20px; }
-.product-footer .ts-logo { font-size: 20px; }
-.product-footer .ts-logo svg { width: 20px; }
+.product-footer .ts-logo img { width: 138px; }
 .product-footer > div > span, .product-footer p { font-size: 11px; color: #68768a; }
 .product-footer p a { display: inline-flex; align-items: center; gap: 3px; margin-left: 5px; color: #3f5679; }
 .mobile-only, .mobile-booking-bar { display: none; }
@@ -227,6 +227,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, select:focus-visib
 .review-next { padding: 17px; display: flex; align-items: flex-start; gap: 10px; background: #f1f5fb; border-radius: 7px; }
 .review-next svg { flex-shrink: 0; color: #2457d6; }
 .review-next p { font-size: 12px; line-height: 1.7; color: #6c7e97; }
+.review-payment { margin-top: 25px; padding-top: 25px; border-top: 1px solid #e4e9f0; }
 /* Account screens */
 .ts-auth-page { min-height: 100vh; background: #f7f8fa; }
 .ts-auth-page > header { display: flex; align-items: center; justify-content: space-between; max-width: 1100px; padding: 25px; margin: auto; }
@@ -242,7 +243,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, select:focus-visib
 .ts-auth-panel { padding: 38px; }
 .ts-auth-form h1 { font-size: 25px; font-weight: 650; letter-spacing: -.7px; }
 .ts-auth-form input { min-height: 45px; }
-.ts-account-switch { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #dce4ef; margin-bottom: 30px; gap: 20px; }
+.ts-account-switch { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #dce4ef; margin-bottom: 30px; gap: 20px; }
 .ts-account-switch a { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 11px 0 15px; font-size: 11px; font-weight: 500; color: #8590a2; border-bottom: 2px solid transparent; }
 .ts-account-switch a[aria-current] { color: #2457d6; border-bottom-color: #2457d6; }
 .ts-auth-page > footer { font-size: 11px; color: #68768a; text-align: center; padding: 22px; }
@@ -261,6 +262,11 @@ a:focus-visible, button:focus-visible, summary:focus-visible, select:focus-visib
 .ts-worker-stats svg { color: #6e819e; width: 22px; }
 .ts-worker-stats span { font-size: 12px; color: #68768a; margin: 20px 0 6px; }
 .ts-worker-stats strong { font-size: 23px; text-transform: capitalize; }
+.ts-location-toggle { display: flex; align-items: center; gap: 14px; margin-top: 22px; }
+.ts-location-toggle button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; border: 1px solid #e0e6ee; background: white; font-size: 13px; font-weight: 600; color: #4b5768; transition: background .15s, color .15s, border-color .15s; }
+.ts-location-toggle button:hover { border-color: #b7c4d8; }
+.ts-location-toggle button.is-sharing { background: #16a34a; border-color: #16a34a; color: white; }
+.ts-location-toggle p { font-size: 12px; color: #68768a; }
 .ts-worker-notice { display: flex; align-items: center; gap: 15px; background: #edf2fb; border: 1px solid #d8e3f5; border-radius: 9px; padding: 22px; margin: 24px 0; }
 .ts-worker-notice > svg { flex-shrink: 0; color: #5c78a8; }
 .ts-worker-notice h2 { font-size: 15px; font-weight: 600; }
@@ -274,6 +280,27 @@ a:focus-visible, button:focus-visible, summary:focus-visible, select:focus-visib
 .ts-worker-jobs > article { padding: 22px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid #e0e6ee; }
 .ts-worker-jobs > article p { font-size: 13px; color: #78879d; margin-top: 7px; }
 .ts-worker-jobs > article > span { font-size: 11px; text-transform: capitalize; color: #466baf; }
+/* Company workspace: add-worker form + roster */
+.ts-add-worker { border: 1px solid #e0e6ee; background: white; border-radius: 9px; padding: 24px; margin-top: 18px; }
+.ts-add-worker-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 20px; }
+.ts-add-worker-grid > :last-child { grid-column: 1 / -1; }
+.ts-add-worker button[type="submit"] { margin-top: 18px; }
+.ts-roster { display: flex; flex-direction: column; margin-top: 18px; border: 1px solid #e0e6ee; border-radius: 9px; background: white; overflow: hidden; }
+.ts-roster-error { padding: 14px 22px; font-size: 13px; color: #b91c1c; background: #fef2f2; }
+.ts-roster-row { display: grid; grid-template-columns: 14px 1.4fr 1fr auto auto; align-items: center; gap: 18px; padding: 18px 22px; border-bottom: 1px solid #e0e6ee; }
+.ts-roster-row:last-child { border-bottom: none; }
+.ts-roster-row strong { font-size: 14px; font-weight: 600; }
+.ts-roster-row p { font-size: 12px; color: #78879d; margin-top: 3px; }
+.ts-roster-category { font-size: 12px; color: #466baf; }
+.ts-roster-dot { width: 9px; height: 9px; border-radius: 50%; background: #cbd3e0; }
+.ts-roster-dot.is-online { background: #16a34a; box-shadow: 0 0 0 3px #16a34a26; }
+.ts-roster-status { font-size: 11px; font-weight: 600; letter-spacing: .3px; text-transform: capitalize; padding: 4px 10px; border-radius: 999px; background: #eef1f6; color: #68768a; justify-self: start; }
+.ts-roster-status.status-approved { background: #e9f9ee; color: #1a7f3c; }
+.ts-roster-status.status-pending { background: #fff7e6; color: #9a6b00; }
+.ts-roster-status.status-suspended, .ts-roster-status.status-rejected { background: #fdeeee; color: #b91c1c; }
+.ts-roster-row button { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; color: #97a2b3; transition: background .15s, color .15s; }
+.ts-roster-row button:hover { background: #fdeeee; color: #b91c1c; }
+.ts-roster-row button:disabled { opacity: .5; pointer-events: none; }
 @media (max-width: 1050px) {
   .product-header > div { gap: 30px; }
   .product-header nav { gap: 20px; }
@@ -294,9 +321,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, select:focus-visib
   .product-account { font-size: 11px; gap: 14px; }
   .worker-entry svg { display: none; }
   .account-entry { padding: 10px 11px; }
-  .ts-logo { font-size: 23px; gap: 6px; }
-  .ts-logo svg { width: 22px; }
-  .ts-brand-image { width: 125px; }
+  .ts-logo img { width: 136px; }
   .product-main { padding: 30px 20px 0; }
   .booking-intro { margin-bottom: 27px; }
   .booking-intro h1 { font-size: 32px; letter-spacing: -1.15px; }
@@ -344,5 +369,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible, select:focus-visib
   .ts-section { padding: 30px 20px; }
   .ts-worker-stats { grid-template-columns: 1fr; gap: 10px; }
   .ts-worker-stats article { padding: 20px; }
+  .ts-add-worker-grid { grid-template-columns: 1fr; }
+  .ts-roster-row { grid-template-columns: 14px 1fr auto; row-gap: 6px; }
+  .ts-roster-category { grid-column: 2 / 3; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }

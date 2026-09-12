@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Check, MapPin, MousePointer2, ReceiptText, Wrench, Building2, ListFilter } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, MapPin, MousePointer2, Phone, ReceiptText, Wrench, Building2, ListFilter } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { BrandLogo } from "@/components/brand-logo";
 import { CategoryIcon } from "@/components/category-icon";
@@ -19,6 +19,11 @@ export default function Home() {
       { icon: MousePointer2, title: "Choose and book", text: "Check the company’s services and starting estimate, then add your job details and preferred timing." },
     ].map(({ icon: Icon, title, text }, index) => <article key={title}><div><Icon size={25} /><span>0{index + 1}</span></div><h3>{title}</h3><p>{text}</p></article>)}</div></section></Reveal>
     <Reveal><section className="landing-choice"><div><span className="landing-eyebrow">A CLEARER PICTURE BEFORE YOU BOOK</span><h2>Your home.<br />Your choice of help.</h2><Link href="/services">Explore the directory <ArrowRight size={17} /></Link></div><div className="landing-choice-list"><article><Building2 size={22} /><div><h3>Get to know the company</h3><p>See what they do and which services fit your job before you choose.</p></div></article><article><ReceiptText size={22} /><div><h3>Understand the starting cost</h3><p>Review the callout and first-hour estimate. Parts and additional work may cost more.</p></div></article><article><Check size={22} /><div><h3>Keep the next step clear</h3><p>Review your request before sending. A requested time still needs confirmation.</p></div></article></div></section></Reveal>
+    <Reveal><section id="contact" className="landing-contact"><div className="landing-contact-intro"><span className="landing-contact-kicker">DIRECT LINE</span><h2>Real people.<br /><span>Ready to help.</span></h2><p>Questions about FixItFast, working with us, or getting started? Call the team directly.</p><div className="landing-contact-mark"><Phone size={18} /><span>Tap any number to call</span></div></div><div className="landing-contact-list">{[
+      { name: "Aditya Mirchandani", role: "CEO / CTO", phone: "4048551929", display: "(404) 855-1929" },
+      { name: "Prahul Kota", role: "COO", phone: "6789650263", display: "(678) 965-0263" },
+      { name: "Prathya Kota", role: "Lead of Marketing", phone: "6789650264", display: "(678) 965-0264" },
+    ].map((contact, index) => <a key={contact.phone} href={`tel:+1${contact.phone}`} className="landing-contact-card" aria-label={`Call ${contact.name}, ${contact.role}, at ${contact.display}`}><span className="landing-contact-number">0{index + 1}</span><div><strong>{contact.name}</strong><span className="landing-contact-role">{contact.role}</span><span className="landing-contact-phone">{contact.display}</span></div><span className="landing-contact-call"><Phone size={17} /></span></a>)}</div></section></Reveal>
     <section className="landing-last"><div><h2>What needs doing?</h2><p>Start with the service. Find a company that fits.</p></div><Link href="/services" className="landing-primary">Browse home services <ArrowRight size={18} /></Link></section>
-  </main><footer className="landing-footer"><Link href="/" aria-label="TipStaff home"><BrandLogo /></Link><span>© {new Date().getFullYear()} TipStaff</span><Link href="/worker/signup">Work with TipStaff <ArrowUpRight size={14} /></Link></footer></div>;
+  </main><footer className="landing-footer"><Link href="/" aria-label="FixItFast home"><BrandLogo /></Link><span>© {new Date().getFullYear()} FixItFast</span><Link href="/worker/signup">Work with FixItFast <ArrowUpRight size={14} /></Link></footer></div>;
 }
