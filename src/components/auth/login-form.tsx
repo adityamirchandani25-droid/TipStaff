@@ -38,10 +38,12 @@ export function LoginForm({
   callbackUrl,
   portal = "CUSTOMER",
   initialError = null,
+  initialMessage = null,
 }: {
   callbackUrl: string;
   portal?: AccountPortal;
   initialError?: string | null;
+  initialMessage?: string | null;
 }) {
   const copy = PORTAL_COPY[portal];
   const router = useRouter();
@@ -92,7 +94,15 @@ export function LoginForm({
           />
         </Field>
 
+        <Link
+          href={`/forgot-password?portal=${portal}`}
+          className="-mt-2 self-end text-[13px] font-medium text-brand-700 hover:underline"
+        >
+          Forgot password?
+        </Link>
+
         {formError && <p role="alert" className="text-[13px] text-red-600">{formError}</p>}
+        {initialMessage && !formError && <p role="status" className="text-[13px] text-emerald-700">{initialMessage}</p>}
 
         <Button type="submit" size="lg" disabled={isSubmitting} className="mt-2">
           {isSubmitting ? "Logging in..." : "Log in"}

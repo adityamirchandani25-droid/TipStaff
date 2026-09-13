@@ -10,12 +10,28 @@ import { normalizePhone } from "@/lib/phone";
 import { prisma } from "@/lib/prisma";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { loginSchema, signUpSchema } from "@/lib/validations/auth";
+import { getSiteUrl } from "@/lib/site-url";
 
 export interface ActionResult {
   ok: boolean;
   error?: string;
   requiresEmailConfirmation?: boolean;
 }
+
+const forgotPasswordSchema = z.object({
+  email: z.email("Enter a valid email address"),
+  portal: z.enum(["CUSTOMER", "PROVIDER", "COMPANY"]).default("CUSTOMER"),
+});
+
+const updatePasswordSchema = z
+  .object({
+    password: z.string().min(8, "Use at least 8 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((value) => value.password === value.confirmPassword, {
+    message: "Passwords don’t match",
+    path: ["confirmPassword"],
+  });
 
 export async function login(
   input: unknown,
@@ -90,6 +106,69 @@ export async function signOut() {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut({ scope: "local" });
   redirect("/");
+}
+
+export async function requestPasswordReset(input: unknown): Promise<ActionResult> {
+  const parsed = forgotPasswordSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Enter a valid email address" };
+  }
+
+  try {
+    const supabase = await createSupabaseServerClient();
+    const requestHeaders = await headers();
+    const requestOrigin = requestHeaders.get("origin");
+    const origin = isHttpOrigin(requestOrigin) ? requestOrigin : getSiteUrl();
+    const next = `/update-password?portal=${parsed.data.portal}`;
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      parsed.data.email.trim().toLowerCase(),
+      { redirectTo: `${origin}/auth/confirm?next=${encodeURIComponent(next)}` },
+    );
+
+    if (error?.code === "over_email_send_rate_limit") {
+      return { ok: false, error: "Please wait a minute before requesting another reset email." };
+    }
+    if (error) {
+      console.error("Supabase password reset request failed", { code: error.code });
+      return { ok: false, error: "We couldn’t send the reset email. Try again shortly." };
+    }
+    // Always return the same result when an account is absent so this form
+    // cannot be used to discover registered email addresses.
+    return { ok: true };
+  } catch (error) {
+    console.error("Password reset email request failed", error);
+    return { ok: false, error: "We couldn’t send the reset email. Try again shortly." };
+  }
+}
+
+export async function updatePassword(input: unknown): Promise<ActionResult> {
+  const parsed = updatePasswordSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Check your new password" };
+  }
+
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data: claims, error: claimsError } = await supabase.auth.getClaims();
+    if (claimsError || !claims?.claims?.sub) {
+      return { ok: false, error: "This reset link is invalid or has expired. Request a new one." };
+    }
+    const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+    if (error) {
+      return {
+        ok: false,
+        error:
+          error.code === "same_password"
+            ? "Choose a password you haven’t used before."
+            : "We couldn’t update your password. Request a new reset link and try again.",
+      };
+    }
+    await supabase.auth.signOut({ scope: "local" });
+    return { ok: true };
+  } catch (error) {
+    console.error("Password update failed", error);
+    return { ok: false, error: "We couldn’t update your password. Try again shortly." };
+  }
 }
 
 async function createAccount(
@@ -208,4 +287,14 @@ function signupErrorMessage(code?: string) {
   }
   if (code === "weak_password") return "Choose a stronger password.";
   return "Supabase couldn’t create the account. Check the email and password, then try again.";
+}
+
+function isHttpOrigin(value: string | null): value is string {
+  if (!value) return false;
+  try {
+    const url = new URL(value);
+    return url.origin === value && (url.protocol === "https:" || url.hostname === "localhost");
+  } catch {
+    return false;
+  }
 }

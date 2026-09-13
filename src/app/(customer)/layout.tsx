@@ -2,14 +2,18 @@ import { BrandLogo } from "@/components/brand-logo";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
+import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { accountHome } from "@/lib/auth-routing";
+
+export const metadata: Metadata = { robots: { index: false } };
 
 export default async function CustomerLayout({ children }: { children: ReactNode }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
-  if (session.user.role === "PROVIDER") redirect("/worker/dashboard");
+  if (session.user.role !== "CUSTOMER") redirect(accountHome(session.user.role));
 
   return (
     <div className="flex min-h-screen flex-col">

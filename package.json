@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",
@@ -14,6 +14,9 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

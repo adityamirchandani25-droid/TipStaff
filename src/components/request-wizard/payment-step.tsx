@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useId, useState } from "react";
 import { loadStripe, type Stripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { Loader2, LockKeyhole } from "lucide-react";
@@ -30,11 +30,12 @@ export function PaymentStep({
 }: {
   category: ServiceCategory;
   urgency: UrgencyLevel;
-  onPaid: (paymentIntentId: string) => void;
+  onPaid: (paymentIntentId: string) => Promise<void>;
 }) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [amount, setAmount] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const clientRequestId = useId();
 
   useEffect(() => {
     let cancelled = false;
@@ -42,7 +43,7 @@ export function PaymentStep({
     // edits the service or timing — going "back" to steps 0/2 unmounts this
     // component rather than changing its props in place — so there's no
     // stale-state case to clear here; a fresh mount already starts at null.
-    createPaymentIntent({ category, urgency }).then((result) => {
+    createPaymentIntent({ category, urgency, clientRequestId }).then((result) => {
       if (cancelled) return;
       if (!result.ok || !result.clientSecret) {
         setError(result.error ?? "Couldn’t start payment.");
@@ -54,7 +55,7 @@ export function PaymentStep({
     return () => {
       cancelled = true;
     };
-  }, [category, urgency]);
+  }, [category, urgency, clientRequestId]);
 
   if (error) {
     return <p role="alert" className="text-[13px] text-red-600">{error}</p>;
@@ -74,7 +75,7 @@ export function PaymentStep({
   );
 }
 
-function CheckoutForm({ amount, onPaid }: { amount: number | null; onPaid: (paymentIntentId: string) => void }) {
+function CheckoutForm({ amount, onPaid }: { amount: number | null; onPaid: (paymentIntentId: string) => Promise<void> }) {
   const stripe = useStripe();
   const elements = useElements();
   const [submitting, setSubmitting] = useState(false);
@@ -104,9 +105,10 @@ function CheckoutForm({ amount, onPaid }: { amount: number | null; onPaid: (paym
       return;
     }
     if (paymentIntent?.status === "succeeded") {
-      onPaid(paymentIntent.id);
-      // Left submitting/disabled — the parent takes over from here to
-      // create the request; a resubmit would double-charge the wrong flow.
+      await onPaid(paymentIntent.id);
+      // If saving failed after payment, allow a safe retry. The server treats
+      // the PaymentIntent as an idempotency key and will never charge it twice.
+      setSubmitting(false);
       return;
     }
     setError("Payment didn’t complete. Try again.");

@@ -78,7 +78,7 @@ export function AddWorkerForm() {
           error={errors.password?.message}
           hint="Set this now and share it with the worker — they can change it after they log in."
         >
-          <Input id="worker-password" type="text" autoComplete="off" invalid={!!errors.password} {...register("password")} />
+          <Input id="worker-password" type="password" autoComplete="new-password" invalid={!!errors.password} {...register("password")} />
         </Field>
       </div>
 

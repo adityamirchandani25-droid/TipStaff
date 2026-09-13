@@ -10,7 +10,7 @@ import { AddWorkerForm } from "@/components/company/add-worker-form";
 import { WorkerRoster } from "@/components/company/worker-roster";
 import { accountHome } from "@/lib/auth-routing";
 
-export const metadata = { title: "Company dashboard — FixItFast" };
+export const metadata = { title: "Company dashboard", robots: { index: false } };
 
 export default async function CompanyDashboard() {
   const session = await auth();

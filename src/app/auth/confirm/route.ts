@@ -19,6 +19,10 @@ export async function GET(request: NextRequest) {
       ? await supabase.auth.exchangeCodeForSession(code)
       : { error: new Error("Missing confirmation token") };
 
-  const destination = result.error ? "/login?error=confirmation" : next;
+  const destination = result.error
+    ? next.startsWith("/update-password")
+      ? "/forgot-password?error=expired"
+      : "/login?error=confirmation"
+    : next;
   return NextResponse.redirect(new URL(destination, request.url));
 }

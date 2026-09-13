@@ -19,6 +19,7 @@ test("confirmation callbacks allow only FixItFast account destinations", () => {
   assert.equal(safeAuthCallback("/worker/dashboard", "/dashboard"), "/worker/dashboard");
   assert.equal(safeAuthCallback("/company/dashboard", "/dashboard"), "/company/dashboard");
   assert.equal(safeAuthCallback("/request/new?category=HVAC", "/dashboard"), "/request/new?category=HVAC");
+  assert.equal(safeAuthCallback("/update-password?portal=PROVIDER", "/dashboard"), "/update-password?portal=PROVIDER");
   for (const raw of ["//evil.example", "https://evil.example", "/api/keys", "/services", undefined]) {
     assert.equal(safeAuthCallback(raw, "/worker/dashboard"), "/worker/dashboard");
   }

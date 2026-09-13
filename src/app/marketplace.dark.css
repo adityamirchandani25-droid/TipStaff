@@ -63,7 +63,7 @@
 [data-theme="dark"] .directory-toolbar { border-bottom: 1px solid #152131; }
 [data-theme="dark"] .directory-toolbar > div:first-child { color: #7594b6; }
 [data-theme="dark"] .directory-toolbar strong { color: #cad7e6; }
-[data-theme="dark"] .directory-demo { color: #978c70; background: #252216; border: 1px solid #342f20; }
+[data-theme="dark"] .directory-live { color: #77d59e; background: #10271a; border-color: #1b3d29; }
 [data-theme="dark"] .company-search { background: #0d1520; border: 1px solid #172231; color: #a9b7c9; }
 [data-theme="dark"] .company-search input { color: #c7d5e2; }
 [data-theme="dark"] .company-search:focus-within { outline: 2px solid #0f3870; }
@@ -83,7 +83,17 @@
 [data-theme="dark"] .company-no-results { color: #a7b6c9; }
 [data-theme="dark"] .company-no-results h2 { color: #c6d5e5; }
 [data-theme="dark"] .company-no-results button { color: #3888f8; }
+[data-theme="dark"] .company-no-results .directory-empty-action { color: #eef1f6; }
+[data-theme="dark"] .directory-load-error { color: #fdba74; background: #2b170c; border-color: #5d2f13; }
+[data-theme="dark"] .directory-location-prompt > span, [data-theme="dark"] .directory-map-gate > div > span { color: #69a5f6; background: #0c1d32; border-color: #173558; }
+[data-theme="dark"] .directory-location-prompt h2, [data-theme="dark"] .directory-map-gate h2 { color: #c9d9ea; }
+[data-theme="dark"] .directory-location-prompt p, [data-theme="dark"] .directory-map-gate p { color: #94a7be; }
+[data-theme="dark"] .provider-monogram { color: #7caff0; background: #0b1b30; }
+[data-theme="dark"] .provider-company { color: #82a5ce !important; }
+[data-theme="dark"] .provider-rating { color: #f3bd61; }
+[data-theme="dark"] .provider-rating small, [data-theme="dark"] .provider-new { color: #9cafc5; }
 [data-theme="dark"] .company-map-shell { background: #172128; }
+[data-theme="dark"] .directory-map-gate { background: radial-gradient(circle at 50% 45%, #122943, transparent 30%), linear-gradient(145deg, #101923, #121d28); }
 [data-theme="dark"] .map-loading { background: #0e1b2a; color: #8fa6c1; }
 [data-theme="dark"] .map-location { background: #121212; border: 1px solid #152436; box-shadow: 0 3px 15px #c3d7ed14; color: #c8d8e8; }
 [data-theme="dark"] .map-location > span { background: #b9c5d5; }
@@ -103,23 +113,10 @@
 [data-theme="dark"] .company-detail h2 { color: #c4d3e5; }
 [data-theme="dark"] .company-specialties li { color: #92a6bf; }
 [data-theme="dark"] .company-specialties svg { color: #70a6e1; }
-[data-theme="dark"] .company-worker { border-block: 1px solid #12202f; }
-[data-theme="dark"] .company-worker > span { background: #08172b; color: #98b5d9; }
-[data-theme="dark"] .company-worker strong { color: #5a83b1; }
-[data-theme="dark"] .company-worker p { color: #b2becf; }
 [data-theme="dark"] .company-price > span { color: #a7b8cd; }
 [data-theme="dark"] .company-price strong { color: #c2d5eb; }
 [data-theme="dark"] .company-price p { color: #adbcce; }
 [data-theme="dark"] .directory-primary { background: #3888f8; color: #eef1f6; }
 [data-theme="dark"] .directory-primary:hover { background: #1874f7; }
-[data-theme="dark"] .company-demo-note { color: #b1bece; }
-[data-theme="dark"] .company-booking-form > p { color: #a0b0c5; }
-[data-theme="dark"] .company-booking-form label { color: #7090b5; }
-[data-theme="dark"] .company-booking-form select, [data-theme="dark"] .company-booking-form textarea { border: 1px solid #15253a; background: #121212; color: #4678b4; }
-[data-theme="dark"] .booking-preview-done > span { background: #071d30; color: #599ce2; }
-[data-theme="dark"] .booking-preview-done > p { color: #a3b4c9; }
-[data-theme="dark"] .booking-preview-done dl { border-block: 1px solid #101f33; }
-[data-theme="dark"] .booking-preview-done dt { color: #abbace; }
-[data-theme="dark"] .booking-preview-done dd { color: #5c86b8; }
-[data-theme="dark"] .demo-booking-disclosure { background: #0b1627; color: #96a9c2; }
+[data-theme="dark"] .company-service-note { color: #b1bece; }
 [data-theme="dark"] .directory-general-request { color: #7c9bbf; }

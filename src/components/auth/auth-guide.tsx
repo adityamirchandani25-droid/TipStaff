@@ -1,9 +1,17 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Check, ClipboardList, Wrench, Building2 } from "lucide-react";
+import { Check, ClipboardList, Wrench, Building2, ShieldCheck } from "lucide-react";
 
 const GUIDE_COPY = {
+  recovery: {
+    icon: ShieldCheck,
+    overline: "SECURE ACCOUNT RECOVERY",
+    heading: "Get back in safely.",
+    intro: "FixItFast uses a private, time-limited recovery link to protect your account.",
+    points: ["One-time recovery link", "No password sent by email", "Confirmation before the password changes"],
+    note: "Only use a reset link you requested. FixItFast will never ask you to email us your password.",
+  },
   company: {
     icon: Building2,
     overline: "COMPANY ACCOUNT",
@@ -32,7 +40,7 @@ const GUIDE_COPY = {
 
 export function AuthGuide() {
   const pathname = usePathname();
-  const portal = pathname.startsWith("/company") ? "company" : pathname.startsWith("/worker") ? "worker" : "customer";
+  const portal = pathname === "/forgot-password" || pathname === "/update-password" ? "recovery" : pathname.startsWith("/company") ? "company" : pathname.startsWith("/worker") ? "worker" : "customer";
   const copy = GUIDE_COPY[portal];
   const Icon = copy.icon;
   return (

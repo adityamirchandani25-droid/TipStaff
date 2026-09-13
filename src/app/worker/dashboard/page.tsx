@@ -8,7 +8,7 @@ import { SignOutButton } from "@/components/auth/sign-out-button";
 import { LocationShareToggle } from "@/components/worker/location-share-toggle";
 import { CATEGORY_LABELS } from "@/lib/categories";
 
-export const metadata = { title: "Worker dashboard — FixItFast" };
+export const metadata = { title: "Worker dashboard", robots: { index: false } };
 export default async function WorkerDashboard() {
   const session = await auth();
   if (!session?.user) redirect("/worker/login");

@@ -3,7 +3,7 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-const MINIMUM_TRANSITION_MS = 720;
+const MINIMUM_TRANSITION_MS = 1050;
 
 export function HouseLoader({ overlay = false }: { overlay?: boolean }) {
   return (
@@ -95,10 +95,10 @@ export function NavigationTransition() {
       setVisible(true);
     }
 
-    document.addEventListener("click", beginTransition, true);
+    document.addEventListener("click", beginTransition);
     window.addEventListener("popstate", beginHistoryTransition);
     return () => {
-      document.removeEventListener("click", beginTransition, true);
+      document.removeEventListener("click", beginTransition);
       window.removeEventListener("popstate", beginHistoryTransition);
     };
   }, []);

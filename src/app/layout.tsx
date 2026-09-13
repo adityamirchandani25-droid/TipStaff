@@ -5,6 +5,7 @@ import { DM_Sans, Public_Sans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NavigationTransition } from "@/components/navigation-transition";
+import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 import "./motion.css";
 import "./globals.dark.css";
@@ -24,15 +25,33 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "FixItFast — On-demand home repair",
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: "FixItFast — Local home repair, without the runaround",
+    template: "%s | FixItFast",
+  },
   description:
-    "Choose a home service, see a starting estimate, and manage your requests with FixItFast.",
+    "Find approved home-service professionals sharing live availability near you, compare starting estimates, and send a service request.",
+  applicationName: "FixItFast",
+  openGraph: {
+    type: "website",
+    siteName: "FixItFast",
+    title: "FixItFast — Local home repair, without the runaround",
+    description: "Find approved home-service professionals sharing live availability near you.",
+    url: "/",
+  },
+  twitter: {
+    card: "summary",
+    title: "FixItFast — Local home repair, without the runaround",
+    description: "Find approved home-service professionals sharing live availability near you.",
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${publicSans.variable} ${dmSans.variable} h-full antialiased`}
       suppressHydrationWarning
     >

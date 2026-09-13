@@ -9,6 +9,7 @@ import { CATEGORY_ORDER, URGENCY_ORDER } from "@/lib/categories";
 const inputSchema = z.object({
   category: z.enum(CATEGORY_ORDER),
   urgency: z.enum(URGENCY_ORDER),
+  clientRequestId: z.string().min(1).max(100),
 });
 
 export interface PaymentIntentResult {
@@ -42,7 +43,7 @@ export async function createPaymentIntent(input: unknown): Promise<PaymentIntent
     };
   }
 
-  const { category, urgency } = parsed.data;
+  const { category, urgency, clientRequestId } = parsed.data;
   const estimate = estimatePriceRange(category, urgency);
   const amount = Math.round(estimate.low * 100);
 
@@ -52,7 +53,17 @@ export async function createPaymentIntent(input: unknown): Promise<PaymentIntent
       amount,
       currency: "usd",
       automatic_payment_methods: { enabled: true },
-      metadata: { customerId: session.user.id, category, urgency },
+      metadata: {
+        customerId: session.user.id,
+        category,
+        urgency,
+        estimateHigh: String(estimate.high),
+        surgeMultiplier: String(estimate.surgeMultiplier),
+      },
+    }, {
+      // React may remount the payment step during navigation/recovery. Keep
+      // identical attempts within this short window from minting extra intents.
+      idempotencyKey: `request-estimate:${session.user.id}:${clientRequestId}`,
     });
     if (!intent.client_secret) {
       return { ok: false, error: "Couldn’t start payment. Try again." };

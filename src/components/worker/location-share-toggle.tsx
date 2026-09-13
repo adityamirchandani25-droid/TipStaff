@@ -35,6 +35,7 @@ export function LocationShareToggle({ initialOnline }: { initialOnline: boolean 
         () => {
           setError("Location permission is off. Turn it on to share your location.");
           setSharing(false);
+          void fetch("/api/providers/location", { method: "DELETE" }).catch(() => {});
         },
         { enableHighAccuracy: true, maximumAge: 15_000, timeout: 10_000 },
       );
@@ -62,7 +63,13 @@ export function LocationShareToggle({ initialOnline }: { initialOnline: boolean 
   async function handleToggle() {
     if (sharing) {
       setSharing(false);
-      fetch("/api/providers/location", { method: "DELETE" }).catch(() => {});
+      try {
+        const response = await fetch("/api/providers/location", { method: "DELETE" });
+        if (!response.ok) throw new Error("location stop failed");
+        setError(null);
+      } catch {
+        setError("We couldn’t update your status. Your location will disappear automatically within five minutes.");
+      }
       return;
     }
     if (!("geolocation" in navigator)) {

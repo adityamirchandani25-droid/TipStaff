@@ -1,19 +1,6 @@
-// Geocoding for new addresses. With a Mapbox token configured, this calls
-// the real Geocoding API; otherwise it falls back to a deterministic
-// mock — jittered around Austin, TX, seeded from the postal code so the
-// same address always lands at the same point (useful for distance-based
-// matching in dev without a real key).
-
-const MOCK_ORIGIN = { lat: 30.2711, lng: -97.7437 };
-
-function seededJitter(seed: string, range: number) {
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    hash = (hash << 5) - hash + seed.charCodeAt(i);
-    hash |= 0;
-  }
-  return ((hash % 1000) / 1000) * range - range / 2;
-}
+// Server-side geocoding for service addresses. A missing token or an
+// unmatched address is a hard failure: dispatch must never use fabricated
+// coordinates in production.
 
 export interface GeocodedPoint {
   lat: number;
@@ -26,23 +13,29 @@ export async function geocodeAddress(address: {
   state: string;
   postalCode: string;
 }): Promise<GeocodedPoint> {
-  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-  if (!token) {
-    const seed = `${address.line1}${address.postalCode}`;
-    return {
-      lat: MOCK_ORIGIN.lat + seededJitter(seed, 0.08),
-      lng: MOCK_ORIGIN.lng + seededJitter(seed + "lng", 0.08),
-    };
-  }
+  // Prefer a server-only token. The public-token fallback keeps existing
+  // deployments working while they migrate their environment configuration.
+  const token = process.env.MAPBOX_TOKEN ?? process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+  if (!token) throw new Error("MAPBOX_TOKEN is not configured");
 
-  const query = encodeURIComponent(
-    `${address.line1}, ${address.city}, ${address.state} ${address.postalCode}`,
-  );
-  const res = await fetch(
-    `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${token}`,
-  );
+  const params = new URLSearchParams({
+    q: `${address.line1}, ${address.city}, ${address.state} ${address.postalCode}`,
+    country: "US",
+    types: "address",
+    autocomplete: "false",
+    permanent: "true",
+    limit: "1",
+    access_token: token,
+  });
+  const res = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?${params}`, {
+    cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
+  });
   if (!res.ok) throw new Error(`Mapbox geocoding failed: ${res.status}`);
   const data = await res.json();
-  const [lng, lat] = data.features?.[0]?.center ?? [MOCK_ORIGIN.lng, MOCK_ORIGIN.lat];
+  const center = data.features?.[0]?.geometry?.coordinates;
+  if (!Array.isArray(center) || center.length < 2) throw new Error("Address could not be geocoded");
+  const [lng, lat] = center;
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) throw new Error("Geocoder returned invalid coordinates");
   return { lat, lng };
 }

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <body style="margin:0;background:#f4f6f9;font-family:Arial,Helvetica,sans-serif;color:#172033;">
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Reset your FixItFast password securely.</div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f6f9;padding:32px 16px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#ffffff;border:1px solid #e4e8ef;border-radius:18px;overflow:hidden;box-shadow:0 12px 36px rgba(23,32,51,.08);">
+            <tr>
+              <td style="height:6px;background:#ef6a36;font-size:0;line-height:0;">&nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:34px 38px 12px;">
+                <div style="font-size:23px;font-weight:800;letter-spacing:-.5px;color:#101827;">FixIt<span style="color:#ef6a36;">Fast</span></div>
+                <div style="margin-top:8px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6b7485;">Secure account recovery</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:16px 38px 10px;">
+                <h1 style="margin:0 0 14px;font-size:28px;line-height:1.2;letter-spacing:-.7px;color:#101827;">Let’s reset your password.</h1>
+                <p style="margin:0;font-size:16px;line-height:1.65;color:#536074;">We received a request to choose a new password for the FixItFast account connected to <strong style="color:#172033;">{{ .Email }}</strong>.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:22px 38px;">
+                <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#ef6a36;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;line-height:1;padding:16px 24px;border-radius:10px;box-shadow:0 8px 18px rgba(239,106,54,.24);">Reset my password</a>
+                <p style="margin:14px 0 0;font-size:12px;line-height:1.5;color:#7b8494;">This secure link can only be used for password recovery. If the button does not work, copy and paste this address into your browser:</p>
+                <p style="margin:7px 0 0;font-size:12px;line-height:1.5;word-break:break-all;color:#526a9a;">{{ .ConfirmationURL }}</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:8px 38px 30px;">
+                <div style="border:1px solid #f4d7cb;background:#fff8f4;border-radius:12px;padding:16px 18px;">
+                  <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#9a3f20;">Didn’t request this?</p>
+                  <p style="margin:0;font-size:13px;line-height:1.6;color:#784b3c;">Do not use this link. Secure your email account, review your recent sign-ins, and contact FixItFast if you notice anything suspicious. Your FixItFast password will not change unless the reset link is completed.</p>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="border-top:1px solid #edf0f4;padding:20px 38px 28px;font-size:12px;line-height:1.6;color:#8a93a2;">
+                This email was sent by FixItFast because a password reset was requested for your account. FixItFast will never ask you to reply with your password.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

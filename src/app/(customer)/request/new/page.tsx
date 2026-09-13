@@ -4,7 +4,7 @@ import { listMyAddresses } from "@/lib/actions/requests";
 import { RequestWizard } from "@/components/request-wizard/request-wizard";
 import { CATEGORY_ORDER, URGENCY_ORDER, type ServiceCategory, type UrgencyLevel } from "@/lib/categories";
 
-export const metadata: Metadata = { title: "New request — FixItFast" };
+export const metadata: Metadata = { title: "New request", robots: { index: false } };
 
 function isServiceCategory(value: unknown): value is ServiceCategory {
   return typeof value === "string" && (CATEGORY_ORDER as readonly string[]).includes(value);

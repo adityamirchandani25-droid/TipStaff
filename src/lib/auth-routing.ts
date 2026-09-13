@@ -26,6 +26,7 @@ export function safeAuthCallback(raw: unknown, fallback = "/dashboard") {
     const allowed =
       url.pathname === "/dashboard" ||
       url.pathname.startsWith("/request/") ||
+      url.pathname === "/update-password" ||
       url.pathname === "/worker/dashboard" ||
       url.pathname === "/company/dashboard";
     return allowed ? `${url.pathname}${url.search}` : fallback;

@@ -11,11 +11,8 @@ const RADIUS_MI = 50;
 /**
  * Resolves the center point to search from, then renders the map. Live
  * browser location is the primary source — real GPS, same as the worker
- * side — with the customer's saved address as a fallback only if location
- * permission is denied or unavailable. This deliberately avoids depending
- * on address geocoding: without NEXT_PUBLIC_MAPBOX_TOKEN configured (see
- * lib/geocode.ts), saved addresses resolve to synthetic demo coordinates,
- * not the customer's real location.
+ * side — with the customer's geocoded saved address as a fallback only if
+ * location permission is denied or unavailable.
  */
 export function NearbyWorkersMap({ fallback }: { fallback: { lat: number; lng: number } | null }) {
   const [center, setCenter] = useState<{ lat: number; lng: number } | null>(null);

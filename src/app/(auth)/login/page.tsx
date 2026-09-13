@@ -2,7 +2,7 @@ import { safeCustomerCallback } from "@/lib/auth-routing";
 import type { Metadata } from "next";
 import { LoginForm } from "@/components/auth/login-form";
 
-export const metadata: Metadata = { title: "Log in — FixItFast" };
+export const metadata: Metadata = { title: "Log in", robots: { index: false } };
 
 export default async function LoginPage({
   searchParams,
@@ -16,6 +16,10 @@ export default async function LoginPage({
     params.error === "confirmation"
       ? "That confirmation link is invalid or expired. Request a new email from Supabase and try again."
       : null;
+  const initialMessage =
+    params.status === "password-updated"
+      ? "Password updated. Log in with your new password."
+      : null;
 
-  return <LoginForm callbackUrl={callbackUrl} initialError={initialError} />;
+  return <LoginForm callbackUrl={callbackUrl} initialError={initialError} initialMessage={initialMessage} />;
 }

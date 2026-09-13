@@ -186,6 +186,7 @@ model Provider {
 
   @@index([approvalStatus])
   @@index([isOnline])
+  @@index([isOnline, approvalStatus, locationUpdatedAt])
   @@index([companyId])
 }
 
@@ -196,7 +197,7 @@ model Certification {
   name       String
   issuer     String?
   fileUrl    String?
-  verified   Boolean  @default(false) // mocked verification for MVP
+  verified   Boolean  @default(false) // set only after platform review
   uploadedAt DateTime @default(now())
 
   @@index([providerId])
@@ -229,6 +230,7 @@ model ServiceRequest {
 
   @@index([status])
   @@index([customerId])
+  @@index([addressId])
 }
 
 /// One offer, to one provider, for one request — created and expired in
@@ -302,6 +304,7 @@ model Message {
   createdAt DateTime @default(now())
 
   @@index([jobId])
+  @@index([senderId])
 }
 
 // ---------------------------------------------------------------------------
@@ -355,4 +358,5 @@ model Review {
   createdAt  DateTime @default(now())
 
   @@index([providerId])
+  @@index([authorId])
 }

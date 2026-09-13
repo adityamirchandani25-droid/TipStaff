@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     },
   });
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
 }
 
 /** "Stop sharing my location" — takes the worker off the customer-facing
@@ -57,5 +57,5 @@ export async function DELETE() {
     data: { isOnline: false },
   });
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
 }

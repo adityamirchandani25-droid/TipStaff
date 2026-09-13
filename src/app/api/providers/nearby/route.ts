@@ -33,6 +33,24 @@ export async function GET(request: Request) {
   }
 
   const { lat, lng, radius, category } = parsed.data;
-  const workers = await findNearbyWorkers(lat, lng, radius, category);
-  return NextResponse.json({ workers });
+  try {
+    const workers = await findNearbyWorkers(lat, lng, radius, category);
+    // Public maps only need a useful neighborhood-level position. Rounding
+    // avoids publishing a worker's exact GPS coordinates to anonymous users.
+    const publicWorkers = workers.map((worker) => ({
+      ...worker,
+      lat: Math.round(worker.lat * 1_000) / 1_000,
+      lng: Math.round(worker.lng * 1_000) / 1_000,
+    }));
+    return NextResponse.json(
+      { workers: publicWorkers },
+      { headers: { "Cache-Control": "private, no-store, max-age=0" } },
+    );
+  } catch (error) {
+    console.error("Nearby provider lookup failed", error);
+    return NextResponse.json(
+      { error: "Nearby availability is temporarily unavailable" },
+      { status: 503, headers: { "Cache-Control": "no-store" } },
+    );
+  }
 }
