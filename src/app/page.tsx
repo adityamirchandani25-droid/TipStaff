@@ -7,6 +7,7 @@ import { CATEGORY_ORDER, CATEGORY_LABELS } from "@/lib/categories";
 import { Reveal } from "@/components/marketing/reveal";
 import "./marketplace.css";
 import "./marketplace.dark.css";
+import "./landing-polish.css";
 
 export default function Home() {
   return <div className="landing-home"><SiteHeader current="home" /><a href="#main" className="skip-link">Skip to content</a><main id="main">

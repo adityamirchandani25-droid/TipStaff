@@ -12,7 +12,7 @@
 .landing-hero { max-width: 1280px; padding: 83px 30px 77px; margin: auto; display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 65px; }
 .landing-eyebrow { color: #3771b3; font-size: 10px; letter-spacing: 1.6px; font-weight: 650; display: block; margin-bottom: 20px; }
 .landing-hero h1 { font-family: var(--font-heading), sans-serif; font-size: clamp(42px,4.7vw,65px); font-weight: 650; letter-spacing: -2.8px; line-height: 1.04; }
-.landing-hero h1 span { color: #0866eb; }
+.landing-hero h1 span { color: #f97316; }
 .landing-hero-copy > p { font-size: 16px; line-height: 1.8; color: #6a7b90; max-width: 430px; margin-top: 25px; }
 .landing-hero-actions { display: flex; align-items: center; gap: 25px; margin-top: 30px; }
 .landing-primary { display: inline-flex; align-items: center; justify-content: center; gap: 22px; background: #0866eb; color: white; padding: 16px 24px; border-radius: 8px; font-size: 13px; font-weight: 600; transition: background .2s, transform .2s; }

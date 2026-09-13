@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 import { DM_Sans, Public_Sans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { NavigationTransition } from "@/components/navigation-transition";
 import "./globals.css";
+import "./motion.css";
 import "./globals.dark.css";
 import "./product-polish.css";
 import "./product-polish.dark.css";
@@ -36,6 +39,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-full flex flex-col bg-surface text-ink-900 font-sans">
         <ThemeProvider>
           {children}
+          <Suspense fallback={null}>
+            <NavigationTransition />
+          </Suspense>
           <ThemeToggle />
         </ThemeProvider>
       </body>
